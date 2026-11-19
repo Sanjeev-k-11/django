@@ -63,16 +63,13 @@
       <span>Analytics & Reports</span>
     </a>
 
-    <!-- Direct Admin Panel Link -->
-    <div class="nav-section-title">Database Administration</div>
-    <a href="/admin/" target="_blank" class="nav-item" style="color: var(--luxury-rose);">
-      <i class="fa-solid fa-database" style="color: var(--luxury-rose);"></i>
-      <span>Django Admin Panel ↗</span>
-    </a>
-    <a href="{% url 'core:home' %}" class="nav-item">
-      <i class="fa-solid fa-globe"></i>
-      <span>Public Home Page</span>
-    </a>
+    {% if user.is_staff %}
+      <div class="nav-section-title">Administration</div>
+      <a href="/admin/" target="_blank" class="nav-item" style="color: var(--luxury-rose) !important; text-decoration: none !important;">
+        <i class="fa-solid fa-shield-halved" style="color: var(--luxury-rose);"></i>
+        <span>Admin Portal ↗</span>
+      </a>
+    {% endif %}
   </nav>
 
   <div class="sidebar-footer">

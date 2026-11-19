@@ -218,8 +218,9 @@ p, span, div, input, button, select, textarea, label {
 .nav-item {
   display: flex;
   align-items: center;
-  padding: 0.7rem 1.5rem;
-  color: var(--text-main);
+  padding: 0.72rem 1.5rem;
+  color: var(--text-main) !important;
+  text-decoration: none !important;
   gap: 0.85rem;
   font-size: 0.98rem;
   font-weight: 500;
@@ -227,7 +228,14 @@ p, span, div, input, button, select, textarea, label {
   transition: var(--transition);
 }
 
-.nav-item i {
+.nav-item:visited {
+  color: var(--text-main) !important;
+  text-decoration: none !important;
+}
+
+.nav-item i,
+.nav-item svg,
+.nav-item .svg-inline--fa {
   font-size: 1.1rem;
   width: 22px;
   text-align: center;
@@ -236,22 +244,28 @@ p, span, div, input, button, select, textarea, label {
 }
 
 .nav-item:hover {
-  background-color: var(--primary-light);
-  color: var(--primary);
+  background-color: var(--luxury-rose-light);
+  color: var(--luxury-rose) !important;
+  text-decoration: none !important;
 }
 
-.nav-item:hover i {
-  color: var(--primary);
+.nav-item:hover i,
+.nav-item:hover svg,
+.nav-item:hover .svg-inline--fa {
+  color: var(--luxury-rose) !important;
 }
 
 .nav-item.active {
-  background-color: var(--primary-light);
-  color: var(--primary);
+  background-color: var(--luxury-rose-light);
+  color: var(--luxury-rose) !important;
   font-weight: 700;
+  text-decoration: none !important;
 }
 
-.nav-item.active i {
-  color: var(--primary);
+.nav-item.active i,
+.nav-item.active svg,
+.nav-item.active .svg-inline--fa {
+  color: var(--luxury-rose) !important;
 }
 
 .nav-item.active::before {
