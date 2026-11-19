@@ -1,7 +1,7 @@
 {% extends "admin/base.html" %}
 {% load i18n static %}
 
-{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('StudyMate Admin') }}{% endblock %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('StudyMate Database Admin') }}{% endblock %}
 
 {% block extrastyle %}
 {{ block.super }}
@@ -9,19 +9,25 @@
   :root {
     --admin-brand: #9D174D;
     --admin-brand-dark: #831843;
+    --admin-rose-light: #FFF1F2;
+    --admin-rose-border: #FECDD3;
     --admin-gold: #D97706;
+    --admin-gold-light: #FEF3C7;
   }
-  body, button, input, select, textarea, p, h1, h2, h3, th, td, a {
+  body, button, input, select, textarea, p, h1, h2, h3, th, td, a, div, span {
     font-family: "Times New Roman", Times, serif !important;
   }
+
+  /* Header Branding */
   #header {
     background: linear-gradient(135deg, var(--admin-brand) 0%, var(--admin-brand-dark) 100%) !important;
     color: #FFF !important;
-    padding: 14px 24px !important;
-    box-shadow: 0 4px 12px rgba(157, 23, 77, 0.25) !important;
+    padding: 16px 28px !important;
+    box-shadow: 0 4px 20px rgba(157, 23, 77, 0.28) !important;
+    border-bottom: 2px solid #BE185D !important;
   }
   #branding h1 {
-    font-size: 1.35rem !important;
+    font-size: 1.45rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.02em !important;
     color: #FFFFFF !important;
@@ -30,59 +36,155 @@
     color: #FFFFFF !important;
     text-decoration: none !important;
   }
+
+  /* Breadcrumbs */
   div.breadcrumbs {
-    background: #FFF1F2 !important;
+    background: #FFF9F5 !important;
     color: #831843 !important;
-    border-bottom: 1px solid #FECDD3 !important;
-    font-size: 0.88rem !important;
+    border-bottom: 1px solid var(--admin-rose-border) !important;
+    font-size: 0.9rem !important;
+    padding: 12px 28px !important;
   }
   div.breadcrumbs a {
     color: var(--admin-brand) !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Dashboard Module Cards */
+  .module {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(229, 231, 235, 0.8) !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+    margin-bottom: 24px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  }
+  .module:hover {
+    box-shadow: 0 8px 24px rgba(157, 23, 77, 0.08) !important;
   }
   .module h2, .module caption, .inline-group h2 {
     background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%) !important;
     color: var(--admin-brand) !important;
-    border-bottom: 1px solid #FECDD3 !important;
+    border-bottom: 1px solid var(--admin-rose-border) !important;
+    font-size: 1.15rem !important;
     font-weight: 700 !important;
+    padding: 12px 18px !important;
   }
+
+  /* Action Buttons */
   .button, input[type=submit], input[type=button], .submit-row input, a.button {
     background: linear-gradient(135deg, var(--admin-brand) 0%, #BE185D 100%) !important;
     color: #FFF !important;
     border: none !important;
-    border-radius: 20px !important;
-    padding: 8px 18px !important;
-    font-weight: bold !important;
+    border-radius: 9999px !important;
+    padding: 9px 22px !important;
+    font-size: 0.92rem !important;
+    font-weight: 700 !important;
     cursor: pointer !important;
-    box-shadow: 0 2px 6px rgba(157, 23, 77, 0.2) !important;
+    box-shadow: 0 3px 8px rgba(157, 23, 77, 0.25) !important;
     transition: all 0.2s ease !important;
+    text-decoration: none !important;
   }
-  .button:hover, input[type=submit]:hover, input[type=button]:hover {
+  .button:hover, input[type=submit]:hover, input[type=button]:hover, a.button:hover {
     background: linear-gradient(135deg, var(--admin-brand-dark) 0%, var(--admin-brand) 100%) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 10px rgba(157, 23, 77, 0.35) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 14px rgba(157, 23, 77, 0.35) !important;
+    color: #FFF !important;
   }
   .button.default, input[type=submit].default, .submit-row input.default {
     background: linear-gradient(135deg, var(--admin-gold) 0%, #B45309 100%) !important;
+    box-shadow: 0 3px 8px rgba(217, 119, 6, 0.25) !important;
   }
+
+  /* Return to Student App Button in Header */
   .app-return-btn {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     background: rgba(255, 255, 255, 0.22);
     color: #FFFFFF !important;
-    padding: 6px 14px;
+    padding: 7px 18px;
     border-radius: 9999px;
-    font-size: 0.82rem;
+    font-size: 0.88rem;
     font-weight: 700;
     text-decoration: none;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    margin-right: 15px;
+    margin-right: 18px;
     transition: all 0.2s ease;
   }
   .app-return-btn:hover {
     background: #FFFFFF !important;
     color: var(--admin-brand) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Changelist Tables */
+  #result_list {
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(229, 231, 235, 0.9) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+  }
+  #result_list thead th {
+    background: #FFF1F2 !important;
+    color: var(--admin-brand) !important;
+    font-weight: 700 !important;
+    padding: 12px 14px !important;
+    border-bottom: 2px solid var(--admin-rose-border) !important;
+  }
+  #result_list tbody tr:nth-child(even) {
+    background-color: #FFFDFB !important;
+  }
+  #result_list tbody tr:hover {
+    background-color: #FFF5F7 !important;
+  }
+  #result_list td, #result_list th {
+    padding: 11px 14px !important;
+    border-color: #F3F4F6 !important;
+  }
+
+  /* Filter Sidebar */
+  #changelist-filter {
+    background: #FFFDFB !important;
+    border-left: 1px solid var(--admin-rose-border) !important;
+    border-radius: 18px !important;
+    margin-left: 20px !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03) !important;
+  }
+  #changelist-filter h2 {
+    background: linear-gradient(135deg, #FFF1F2, #FFE4E6) !important;
+    color: var(--admin-brand) !important;
+    border-bottom: 1px solid var(--admin-rose-border) !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 18px 18px 0 0 !important;
+  }
+  #changelist-filter li.selected a {
+    color: var(--admin-brand) !important;
+    font-weight: 700 !important;
+  }
+
+  /* Search Box Toolbar */
+  #toolbar {
+    background: #FFFFFF !important;
+    border: 1px solid rgba(229, 231, 235, 0.9) !important;
+    border-radius: 9999px !important;
+    padding: 8px 16px !important;
+    margin-bottom: 16px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  #toolbar form input[type="text"] {
+    border-radius: 9999px !important;
+    border: 1px solid #D1D5DB !important;
+    padding: 6px 14px !important;
+    font-size: 0.9rem !important;
+  }
+  #toolbar form input[type="submit"] {
+    margin-left: 8px !important;
+    padding: 6px 16px !important;
   }
 </style>
 {% endblock %}

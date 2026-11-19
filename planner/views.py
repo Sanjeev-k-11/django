@@ -88,9 +88,15 @@ def session_delete_view(request, pk):
 # ==========================================================
 @login_required
 def calendar_view(request):
+    user = request.user
+    today = timezone.now().date()
+    upcoming_tasks = Assignment.objects.filter(user=user, due_date__gte=today).exclude(status='completed').select_related('subject').order_by('due_date')[:4]
+    upcoming_exams = Exam.objects.filter(user=user, date__gte=today).select_related('subject').order_by('date')[:3]
     return render(request, 'planner/calendar.html', {
         'active_nav': 'calendar',
         'title': 'Academic Calendar',
+        'upcoming_tasks': upcoming_tasks,
+        'upcoming_exams': upcoming_exams,
     })
 
 

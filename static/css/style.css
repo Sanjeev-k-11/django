@@ -344,12 +344,14 @@ p, span, div, input, button, select, textarea, label {
 
 .topbar-search {
   position: relative;
-  width: 280px;
+  width: 290px;
+  display: flex;
+  align-items: center;
 }
 
 .topbar-search input {
   width: 100%;
-  padding: 0.55rem 1rem 0.55rem 2.4rem;
+  padding: 0.55rem 1rem 0.55rem 2.5rem;
   background-color: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
@@ -357,6 +359,7 @@ p, span, div, input, button, select, textarea, label {
   font-size: 0.95rem;
   outline: none;
   transition: var(--transition);
+  display: block;
 }
 
 .topbar-search input:focus {
@@ -365,13 +368,18 @@ p, span, div, input, button, select, textarea, label {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.topbar-search i {
-  position: absolute;
-  left: 0.9rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  font-size: 0.95rem;
+.topbar-search i,
+.topbar-search svg,
+.topbar-search .svg-inline--fa {
+  position: absolute !important;
+  left: 0.95rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.9rem !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  z-index: 2 !important;
 }
 
 .topbar-right {
@@ -1348,12 +1356,14 @@ p, span, div, input, button, select, textarea, label {
 
 .public-search-pill {
   position: relative;
-  width: 210px;
+  width: 230px;
+  display: flex;
+  align-items: center;
 }
 
 .public-search-pill input {
   width: 100%;
-  padding: 0.5rem 1rem 0.5rem 2.2rem;
+  padding: 0.5rem 1rem 0.5rem 2.4rem;
   background-color: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
@@ -1361,6 +1371,7 @@ p, span, div, input, button, select, textarea, label {
   outline: none;
   color: var(--text-main);
   transition: var(--transition);
+  display: block;
 }
 
 .public-search-pill input:focus {
@@ -1369,13 +1380,18 @@ p, span, div, input, button, select, textarea, label {
   box-shadow: 0 0 0 3px rgba(157, 23, 77, 0.12);
 }
 
-.public-search-pill i {
-  position: absolute;
-  left: 0.85rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  font-size: 0.85rem;
+.public-search-pill i,
+.public-search-pill svg,
+.public-search-pill .svg-inline--fa {
+  position: absolute !important;
+  left: 0.9rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.85rem !important;
+  pointer-events: none !important;
+  margin: 0 !important;
+  z-index: 2 !important;
 }
 
 .public-actions-right {
@@ -1451,18 +1467,31 @@ p, span, div, input, button, select, textarea, label {
 .hero-slide-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(255, 252, 248, 0.96) 0%, rgba(255, 252, 248, 0.90) 50%, rgba(255, 252, 248, 0.40) 100%);
+  background: linear-gradient(90deg, rgba(255, 252, 248, 0.75) 0%, rgba(255, 252, 248, 0.42) 50%, rgba(255, 252, 248, 0.10) 100%);
   z-index: 1;
 }
 
 [data-theme="dark"] .hero-slide-overlay {
-  background: linear-gradient(90deg, rgba(15, 23, 42, 0.96) 0%, rgba(15, 23, 42, 0.88) 50%, rgba(15, 23, 42, 0.45) 100%);
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.82) 0%, rgba(15, 23, 42, 0.48) 50%, rgba(15, 23, 42, 0.12) 100%);
 }
 
 .hero-slide-content {
   position: relative;
   z-index: 2;
   max-width: 680px;
+  background: rgba(255, 252, 248, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 2.25rem 2.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 30px rgba(157, 23, 77, 0.08);
+}
+
+[data-theme="dark"] .hero-slide-content {
+  background: rgba(15, 23, 42, 0.65);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
 .hero-badge-pill {

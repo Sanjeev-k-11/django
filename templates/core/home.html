@@ -12,40 +12,17 @@
     </div>
   </a>
 
-  <!-- Navigation Pill Links -->
+  <!-- Navigation Pill Links: Clean, minimal & intuitive -->
   <ul class="public-nav-links">
     <li><a href="{% url 'core:home' %}" class="public-pill-link active">Home</a></li>
-    <li>
-      <a href="#study-pillars" class="public-pill-link">
-        Study Pillars <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
-      </a>
-    </li>
-    <li>
-      <a href="{% if user.is_authenticated %}{% url 'core:assignment_list' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="public-pill-link">
-        <span class="nav-dot-indicator"></span> Deadlines & Tasks
-      </a>
-    </li>
-    <li>
-      <a href="{% if user.is_authenticated %}{% url 'planner:timer' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="public-pill-link">
-        Focus Timer
-      </a>
-    </li>
-    <li>
-      <a href="{% if user.is_authenticated %}{% url 'planner:timetable' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="public-pill-link">
-        Timetable
-      </a>
-    </li>
+    <li><a href="#study-pillars" class="public-pill-link">Study Pillars <i class="fa-solid fa-chevron-down" style="font-size: 0.72rem; margin-left: 2px;"></i></a></li>
+    <li><a href="#features" class="public-pill-link">Features</a></li>
     <li><a href="{% url 'core:about' %}" class="public-pill-link">About Us</a></li>
-    <li><a href="{% url 'core:contact' %}" class="public-pill-link">Support</a></li>
+    <li><a href="{% url 'core:contact' %}" class="public-pill-link">Support & FAQ</a></li>
   </ul>
 
-  <!-- Right Actions: Search Pill, Theme, Sign In -->
+  <!-- Right Actions: Theme toggle & Authentication button -->
   <div class="public-actions-right">
-    <form action="{% url 'core:global_search' %}" method="GET" class="public-search-pill">
-      <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" name="q" placeholder="Search subjects, tasks..." autocomplete="off">
-    </form>
-
     <button class="action-icon-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
       <i class="fa-solid fa-moon" id="theme-toggle-icon"></i>
     </button>
@@ -53,7 +30,7 @@
     {% if user.is_authenticated %}
       <a href="{% url 'core:dashboard' %}" class="public-btn-signin" style="background: linear-gradient(135deg, #1E40AF, #2563EB);">
         <i class="fa-solid fa-gauge-high"></i>
-        <span>My Dashboard</span>
+        <span>My Dashboard &rarr;</span>
       </a>
     {% else %}
       <a href="{% url 'accounts:login' %}" class="public-btn-signin">
@@ -69,7 +46,7 @@
   <div class="hero-slider-wrapper" id="hero-slider">
     
     <!-- Slide 1: Primary Overview -->
-    <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80');">
+    <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1920&q=85');">
       <div class="hero-slide-overlay"></div>
       <div class="hero-slide-content">
         <div class="hero-badge-pill">
@@ -101,7 +78,7 @@
     </div>
 
     <!-- Slide 2: Pomodoro & Habits -->
-    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1600&q=80');">
+    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1920&q=85');">
       <div class="hero-slide-overlay"></div>
       <div class="hero-slide-content">
         <div class="hero-badge-pill" style="color: var(--accent-teal); border-color: #99F6E4; background: #F0FDFA;">
@@ -124,7 +101,7 @@
     </div>
 
     <!-- Slide 3: Exams & Timetable -->
-    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1600&q=80');">
+    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1920&q=85');">
       <div class="hero-slide-overlay"></div>
       <div class="hero-slide-content">
         <div class="hero-badge-pill" style="color: var(--purple); border-color: #DDD6FE; background: #F5F3FF;">

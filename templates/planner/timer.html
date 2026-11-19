@@ -2,17 +2,30 @@
 {% load static %}
 
 {% block content %}
-<div style="max-width: 900px; margin: 0 auto;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-    <div>
-      <h1>Pomodoro Study Timer</h1>
-      <p style="color: var(--text-muted); font-size: 0.95rem;">Boost focus, eliminate distractions, and automatically log your study sessions.</p>
+<div style="max-width: 920px; margin: 0 auto;">
+  
+  <!-- Page Header -->
+  <div class="card" style="margin-bottom: 2rem; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; border-top: 4px solid var(--luxury-rose);">
+    <div style="display: flex; align-items: center; gap: 1.25rem;">
+      <div class="luxury-squircle-badge" style="width: 58px; height: 58px; font-size: 1.6rem; color: #DC2626; background: linear-gradient(135deg, #FEF2F2, #FEE2E2); border-color: #FECACA;">
+        <i class="fa-solid fa-stopwatch"></i>
+      </div>
+      <div>
+        <h1 style="font-size: 1.85rem; margin-bottom: 0.25rem; color: var(--text-main);">Pomodoro Focus Timer</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">Scientific 25/5 interval cycles to eliminate distractions, sustain cognitive energy, and auto-log study time.</p>
+      </div>
+    </div>
+    
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <span class="badge" style="background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: #92400E; border: 1px solid #FCD34D; font-size: 0.85rem; padding: 0.4rem 0.95rem; font-weight: 700;">
+        🔥 {{ streak }} Days Study Streak
+      </span>
     </div>
   </div>
 
-  <!-- Stats Banner for Today & Week -->
+  <!-- Stats Grid -->
   <div class="stats-grid" style="margin-bottom: 2rem;">
-    <div class="stat-card">
+    <div class="stat-card hover-lift" style="border-radius: 20px;">
       <div class="stat-icon primary">
         <i class="fa-solid fa-clock"></i>
       </div>
@@ -22,7 +35,7 @@
       </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card hover-lift" style="border-radius: 20px;">
       <div class="stat-icon teal">
         <i class="fa-solid fa-calendar-week"></i>
       </div>
@@ -32,39 +45,87 @@
       </div>
     </div>
 
-    <div class="stat-card">
-      <div class="stat-icon danger">
-        <i class="fa-solid fa-fire"></i>
+    <div class="stat-card hover-lift" style="border-radius: 20px;">
+      <div class="stat-icon" style="background: #FFF1F2; color: var(--luxury-rose);">
+        <i class="fa-solid fa-award"></i>
       </div>
       <div>
-        <div class="stat-val" id="timer-streak-val">{{ streak }} Days</div>
-        <div class="stat-label">Current Streak 🔥</div>
+        <div class="stat-val" id="timer-streak-val">{{ study_summary.all_time_hours }} hrs</div>
+        <div class="stat-label">All-Time Study Total</div>
       </div>
     </div>
   </div>
 
-  <!-- Pomodoro Timer Main Card -->
-  <div class="card" style="text-align: center; padding: 2.5rem 2rem; margin-bottom: 2rem;">
+  <!-- Pomodoro Timer Main Luxury Card -->
+  <div class="card" style="text-align: center; padding: 3rem 2rem; margin-bottom: 2.25rem; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; overflow: hidden;">
     
-    <!-- Mode Switcher Tabs -->
-    <div style="display: inline-flex; gap: 0.5rem; background: var(--bg); padding: 0.4rem; border-radius: var(--radius-full); margin-bottom: 1.5rem;">
-      <button type="button" class="btn btn-primary btn-sm" id="timer-tab-focus" style="border-radius: var(--radius-full);">Focus (25m)</button>
-      <button type="button" class="btn btn-secondary btn-sm" id="timer-tab-short" style="border-radius: var(--radius-full);">Short Break (5m)</button>
-      <button type="button" class="btn btn-secondary btn-sm" id="timer-tab-long" style="border-radius: var(--radius-full);">Long Break (15m)</button>
+    <!-- Top Mode Switcher Tabs -->
+    <div style="display: inline-flex; gap: 0.5rem; background: var(--bg); padding: 0.45rem 0.65rem; border-radius: var(--radius-full); margin-bottom: 2rem; border: 1px solid var(--border);">
+      <button type="button" class="timer-mode-pill active" id="timer-tab-focus" data-mode="focus">
+        <i class="fa-solid fa-brain"></i> Focus Session (25m)
+      </button>
+      <button type="button" class="timer-mode-pill" id="timer-tab-short" data-mode="short_break">
+        <i class="fa-solid fa-mug-hot"></i> Short Break (5m)
+      </button>
+      <button type="button" class="timer-mode-pill" id="timer-tab-long" data-mode="long_break">
+        <i class="fa-solid fa-couch"></i> Long Break (15m)
+      </button>
     </div>
 
-    <!-- Animated Timer Circle Display -->
-    <div class="timer-circle-wrap" id="timer-circle">
-      <div class="timer-mode-label" id="timer-mode-label">Focus Session</div>
-      <div class="timer-time-display" id="timer-time-text">25:00</div>
+    <!-- Quick Presets -->
+    <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
+      <span style="font-size: 0.82rem; color: var(--text-muted); align-self: center; margin-right: 0.35rem; font-weight: 600;">Presets:</span>
+      <button type="button" class="preset-chip" onclick="applyPreset(15)">15m Sprint</button>
+      <button type="button" class="preset-chip active" onclick="applyPreset(25)">25m Classic</button>
+      <button type="button" class="preset-chip" onclick="applyPreset(50)">50m Deep Work</button>
+      <button type="button" class="preset-chip" onclick="applyPreset(90)">90m Flow</button>
     </div>
 
-    <!-- Timer Subject & Notes Selector -->
-    <div style="max-width: 450px; margin: 1.5rem auto; display: flex; flex-direction: column; gap: 0.75rem; text-align: left;">
+    <!-- Circular SVG Progress Ring Wrap -->
+    <div class="luxury-timer-wrap" id="timer-circle-wrap">
+      <svg class="timer-svg-ring" viewBox="0 0 320 320">
+        <defs>
+          <linearGradient id="timerGradFocus" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#9D174D" />
+            <stop offset="100%" stop-color="#D97706" />
+          </linearGradient>
+          <linearGradient id="timerGradBreak" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#0D9488" />
+            <stop offset="100%" stop-color="#14B8A6" />
+          </linearGradient>
+        </defs>
+        <!-- Background Track -->
+        <circle class="timer-track" cx="160" cy="160" r="140" />
+        <!-- Animated Progress Arc -->
+        <circle class="timer-progress" id="timer-progress-circle" cx="160" cy="160" r="140" />
+      </svg>
+
+      <div class="timer-center-content">
+        <div class="timer-mode-tag" id="timer-mode-label">FOCUS CYCLE</div>
+        <div class="timer-digital-display" id="timer-time-text">25:00</div>
+        <div class="timer-session-badge" id="timer-status-hint">Ready to focus</div>
+      </div>
+    </div>
+
+    <!-- Focus Cycle Badges (Completed Cycles Today) -->
+    <div style="margin: 1.5rem auto; display: flex; align-items: center; justify-content: center; gap: 0.65rem;">
+      <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Today's Focus Cycles:</span>
+      <div id="pomodoro-cycles-container" style="display: flex; gap: 0.35rem; font-size: 1.25rem;">
+        <span title="Cycle 1">🍅</span>
+        <span title="Cycle 2">🍅</span>
+        <span title="Cycle 3">🍅</span>
+        <span title="Cycle 4" style="opacity: 0.35;">⚪</span>
+      </div>
+    </div>
+
+    <!-- Study Subject & Notes Inputs -->
+    <div style="max-width: 480px; margin: 1.5rem auto; display: flex; flex-direction: column; gap: 0.85rem; text-align: left;">
       <div>
-        <label class="form-label" style="font-size: 0.85rem;">Studying Subject</label>
-        <select id="timer-subject-select" class="form-select">
-          <option value="">General Study (No specific subject)</option>
+        <label class="form-label" style="font-size: 0.85rem; font-weight: 700;">
+          <i class="fa-solid fa-book-open" style="color: var(--luxury-rose);"></i> Link Study Session to Course
+        </label>
+        <select id="timer-subject-select" class="form-select" style="border-radius: 14px;">
+          <option value="">General Academic Study (No specific course)</option>
           {% for s in subjects %}
             <option value="{{ s.id }}">{{ s.name }} ({{ s.code|default:"Course" }})</option>
           {% endfor %}
@@ -72,45 +133,62 @@
       </div>
 
       <div>
-        <label class="form-label" style="font-size: 0.85rem;">Session Notes / Goal</label>
-        <input type="text" id="timer-notes-input" class="form-input" placeholder="e.g. Chapter 4 Review & Exercises">
+        <label class="form-label" style="font-size: 0.85rem; font-weight: 700;">
+          <i class="fa-solid fa-bullseye" style="color: var(--luxury-gold);"></i> Goal / Intended Output
+        </label>
+        <input type="text" id="timer-notes-input" class="form-input" style="border-radius: 14px;" placeholder="e.g. Chapter 4 Practice Problems & Notes Summary">
       </div>
     </div>
 
-    <!-- Controls -->
-    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
-      <button type="button" class="btn btn-primary btn-lg" id="timer-start-btn" style="min-width: 140px;">
+    <!-- Ambient Focus Sound Bar (Built-in Audio Synthesizer) -->
+    <div style="max-width: 480px; margin: 0 auto 1.75rem auto; padding: 0.75rem 1.25rem; background: var(--bg); border-radius: 9999px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+      <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.45rem;">
+        <i class="fa-solid fa-headphones" style="color: var(--luxury-rose);"></i> Ambient Sound:
+      </span>
+      <div style="display: flex; gap: 0.35rem;">
+        <button type="button" class="sound-chip active" data-sound="none" onclick="setAmbientSound('none')">Off</button>
+        <button type="button" class="sound-chip" data-sound="rain" onclick="setAmbientSound('rain')">🌧️ Rain</button>
+        <button type="button" class="sound-chip" data-sound="brown" onclick="setAmbientSound('brown')">🌊 Deep Wave</button>
+        <button type="button" class="sound-chip" data-sound="tick" onclick="setAmbientSound('tick')">⏱️ Clock</button>
+      </div>
+    </div>
+
+    <!-- Primary Control Buttons -->
+    <div style="display: flex; justify-content: center; gap: 1rem; align-items: center; flex-wrap: wrap;">
+      <button type="button" class="btn btn-primary btn-lg" id="timer-start-btn" style="min-width: 165px; border-radius: 9999px; padding: 0.85rem 2rem; font-size: 1.05rem; box-shadow: 0 6px 20px rgba(157, 23, 77, 0.3);">
         <i class="fa-solid fa-play"></i> Start Focus
       </button>
 
-      <button type="button" class="btn btn-warning btn-lg" id="timer-pause-btn" style="min-width: 140px; display: none;">
+      <button type="button" class="btn btn-warning btn-lg" id="timer-pause-btn" style="min-width: 165px; border-radius: 9999px; padding: 0.85rem 2rem; font-size: 1.05rem; display: none;">
         <i class="fa-solid fa-pause"></i> Pause
       </button>
 
-      <button type="button" class="btn btn-secondary btn-lg" id="timer-reset-btn">
+      <button type="button" class="btn btn-secondary btn-lg" id="timer-reset-btn" style="border-radius: 9999px; padding: 0.85rem 1.5rem;">
         <i class="fa-solid fa-rotate-left"></i> Reset
       </button>
 
-      <button type="button" class="btn btn-secondary btn-lg" id="timer-log-manual-btn" title="Manually record study session">
-        <i class="fa-solid fa-pen"></i> Log Time
+      <button type="button" class="btn btn-secondary btn-lg" id="timer-log-manual-btn" style="border-radius: 9999px; padding: 0.85rem 1.5rem;" title="Manually record study session">
+        <i class="fa-solid fa-pen-to-square"></i> Manual Log
       </button>
     </div>
 
-    <!-- Interval Settings Accordion / Customizer -->
-    <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
-      <details style="max-width: 450px; margin: 0 auto; text-align: left; font-size: 0.9rem; color: var(--text-muted);">
-        <summary style="cursor: pointer; font-weight: 600;">Custom Interval Durations</summary>
+    <!-- Custom Intervals Accordion -->
+    <div style="margin-top: 2.5rem; border-top: 1px dashed var(--border); padding-top: 1.25rem;">
+      <details style="max-width: 480px; margin: 0 auto; text-align: left; font-size: 0.88rem; color: var(--text-muted);">
+        <summary style="cursor: pointer; font-weight: 700; color: var(--text-main);">
+          <i class="fa-solid fa-sliders" style="color: var(--luxury-rose);"></i> Customize Timer Durations
+        </summary>
         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem;">
           <div>
-            <label style="font-size: 0.75rem;">Focus (min)</label>
+            <label style="font-size: 0.75rem; font-weight: 600;">Focus (min)</label>
             <input type="number" id="custom-focus-min" class="form-input" value="25" min="1" max="180">
           </div>
           <div>
-            <label style="font-size: 0.75rem;">Short Break (min)</label>
+            <label style="font-size: 0.75rem; font-weight: 600;">Short Break (min)</label>
             <input type="number" id="custom-short-min" class="form-input" value="5" min="1" max="60">
           </div>
           <div>
-            <label style="font-size: 0.75rem;">Long Break (min)</label>
+            <label style="font-size: 0.75rem; font-weight: 600;">Long Break (min)</label>
             <input type="number" id="custom-long-min" class="form-input" value="15" min="1" max="90">
           </div>
         </div>
@@ -119,49 +197,198 @@
   </div>
 
   <!-- Recent Study Sessions Log -->
-  <div class="card">
-    <div class="card-header">
+  <div class="card" style="border-radius: 24px; padding: 1.75rem;">
+    <div class="card-header" style="margin-bottom: 1.25rem;">
       <div class="card-title">
-        <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i>
-        <span>Recent Study Session Logs</span>
+        <i class="fa-solid fa-clock-rotate-left" style="color: var(--luxury-rose);"></i>
+        <span>Recent Study Session History</span>
       </div>
-      <span style="font-size: 0.85rem; color: var(--text-muted);">Total All Time: {{ study_summary.all_time_hours }} hrs</span>
+      <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
+        All Time Total: {{ study_summary.all_time_hours }} hrs
+      </span>
     </div>
 
     {% if recent_sessions %}
-      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      <div style="display: flex; flex-direction: column; gap: 0.85rem;">
         {% for s in recent_sessions %}
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
-            <div>
-              <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <strong style="color: var(--text-main); font-size: 0.95rem;">
-                  {{ s.subject.name|default:"General Study Session" }}
-                </strong>
-                <span class="badge badge-completed">{{ s.duration_minutes }} minutes</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem; border-radius: 16px; background: var(--bg); border: 1px solid var(--border); transition: transform 0.2s ease;">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+              <div class="luxury-squircle-badge" style="width: 42px; height: 42px; font-size: 1.1rem; border-radius: 12px;">
+                <i class="fa-solid fa-book"></i>
               </div>
-              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">
-                {{ s.start|date:"M d, Y - H:i" }} {% if s.notes %}&bull; <em>"{{ s.notes }}"</em>{% endif %}
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <strong style="color: var(--text-main); font-size: 0.95rem;">
+                    {{ s.subject.name|default:"General Study Session" }}
+                  </strong>
+                  <span class="badge" style="background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; font-weight: 700;">
+                    {{ s.duration_minutes }} mins
+                  </span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+                  {{ s.start|date:"M d, Y - H:i" }} {% if s.notes %}&bull; <span style="font-style: italic;">"{{ s.notes }}"</span>{% endif %}
+                </div>
               </div>
             </div>
 
-            <form action="{% url 'planner:session_delete' s.id %}" method="POST" onsubmit="return confirm('Delete this study log entry?');">
+            <form action="{% url 'planner:session_delete' s.id %}" method="POST" onsubmit="return confirm('Delete this study session log?');">
               {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-danger btn-icon" title="Delete session log">
-                <i class="fa-solid fa-trash-can"></i>
+              <button type="submit" class="btn btn-sm btn-secondary btn-icon" title="Delete log entry" style="border-radius: 50%;">
+                <i class="fa-solid fa-trash-can" style="color: var(--danger); font-size: 0.8rem;"></i>
               </button>
             </form>
           </div>
         {% endfor %}
       </div>
     {% else %}
-      <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">
-        No study sessions logged yet. Complete a 25-minute Pomodoro cycle to log your first session!
-      </p>
+      <div class="empty-state" style="padding: 2.5rem 1rem;">
+        <div style="font-size: 2.5rem;">⏱️</div>
+        <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">No Study Sessions Logged Yet</div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Hit "Start Focus" above to begin your first 25-minute Pomodoro study block!</p>
+      </div>
     {% endif %}
   </div>
-</div>
-{% endblock %}
 
-{% block extra_js %}
+</div>
+
+<style>
+  /* Luxury Timer Circular SVG & Progress */
+  .luxury-timer-wrap {
+    position: relative;
+    width: 290px;
+    height: 290px;
+    margin: 1.5rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .timer-svg-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .timer-track {
+    fill: none;
+    stroke: var(--card-bg-subtle);
+    stroke-width: 12;
+  }
+
+  [data-theme="dark"] .timer-track {
+    stroke: #334155;
+  }
+
+  .timer-progress {
+    fill: none;
+    stroke: url(#timerGradFocus);
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-dasharray: 880;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.8s linear, stroke 0.4s ease;
+  }
+
+  .timer-center-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+  }
+
+  .timer-mode-tag {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--luxury-rose);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .timer-digital-display {
+    font-size: 4rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--text-main);
+    font-family: var(--font-main);
+  }
+
+  .timer-session-badge {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+
+  /* Mode Switcher Pill Styles */
+  .timer-mode-pill {
+    background: transparent;
+    border: none;
+    padding: 0.45rem 1.1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-main);
+  }
+
+  .timer-mode-pill:hover {
+    color: var(--text-main);
+  }
+
+  .timer-mode-pill.active {
+    background: linear-gradient(135deg, var(--luxury-rose) 0%, #BE185D 100%);
+    color: #FFFFFF !important;
+    box-shadow: 0 4px 12px rgba(157, 23, 77, 0.25);
+  }
+
+  /* Preset Chips */
+  .preset-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-main);
+  }
+
+  .preset-chip:hover, .preset-chip.active {
+    background: var(--luxury-rose-light);
+    border-color: var(--luxury-rose-border);
+    color: var(--luxury-rose);
+  }
+
+  /* Sound Chips */
+  .sound-chip {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 9999px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-main);
+  }
+
+  .sound-chip:hover, .sound-chip.active {
+    background: var(--luxury-rose);
+    border-color: var(--luxury-rose);
+    color: #FFFFFF;
+  }
+</style>
+
 <script src="{% static 'js/timer.js' %}"></script>
 {% endblock %}
