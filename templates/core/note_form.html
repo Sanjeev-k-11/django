@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 750px; margin: 0 auto;">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="fa-solid fa-note-sticky" style="color: var(--primary);"></i>
+        <span>{{ title }}</span>
+      </div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="id_title">Note Title *</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+          <div class="form-error">{{ form.title.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="id_subject">Subject (Optional)</label>
+          {{ form.subject }}
+          {% if form.subject.errors %}
+            <div class="form-error">{{ form.subject.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_tags">Tags</label>
+          {{ form.tags }}
+          <div class="form-help-text">Comma-separated tags (e.g. formula, midterm, week2)</div>
+          {% if form.tags.errors %}
+            <div class="form-error">{{ form.tags.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_content">Note Content *</label>
+        {{ form.content }}
+        {% if form.content.errors %}
+          <div class="form-error">{{ form.content.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+        {{ form.is_pinned }}
+        <label for="id_is_pinned" style="font-size: 0.95rem; cursor: pointer;">
+          📌 Pin this note to the top of your notes list
+        </label>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'core:note_list' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i> Save Note
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

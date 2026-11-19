@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 0 auto;">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="fa-solid fa-book-open" style="color: var(--primary);"></i>
+        <span>{{ title }}</span>
+      </div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="id_name">Subject Name *</label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          <div class="form-error">{{ form.name.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="id_code">Subject Code</label>
+          {{ form.code }}
+          <div class="form-help-text">e.g. CS101, MATH201, PHY300</div>
+          {% if form.code.errors %}
+            <div class="form-error">{{ form.code.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_teacher">Teacher / Instructor</label>
+          {{ form.teacher }}
+          {% if form.teacher.errors %}
+            <div class="form-error">{{ form.teacher.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="id_color">Theme Color</label>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            {{ form.color }}
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Pick card & calendar accent color</span>
+          </div>
+          {% if form.color.errors %}
+            <div class="form-error">{{ form.color.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_target_grade">Target Grade</label>
+          {{ form.target_grade }}
+          <div class="form-help-text">e.g. A+, 95%</div>
+          {% if form.target_grade.errors %}
+            <div class="form-error">{{ form.target_grade.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if form.is_archived %}
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+          {{ form.is_archived }}
+          <label for="id_is_archived" style="font-size: 0.95rem; cursor: pointer;">Archive this subject (hide from active dashboard)</label>
+        </div>
+      {% endif %}
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'core:subject_list' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>Save Subject</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

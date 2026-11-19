@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1>{{ title }}</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Organize your courses, track total study hours, and monitor assignment completion.</p>
+  </div>
+  <div style="display: flex; gap: 0.75rem;">
+    {% if show_archived %}
+      <a href="{% url 'core:subject_list' %}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> View Active Subjects
+      </a>
+    {% else %}
+      <a href="{% url 'core:subject_list' %}?archived=1" class="btn btn-secondary">
+        <i class="fa-solid fa-box-archive"></i> Archived Subjects
+      </a>
+    {% endif %}
+    <a href="{% url 'core:subject_create' %}" class="btn btn-primary">
+      <i class="fa-solid fa-plus"></i> Add New Subject
+    </a>
+  </div>
+</div>
+
+{% if subjects %}
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+    {% for s in subjects %}
+      <div class="card" style="border-top: 5px solid {{ s.color }}; display: flex; flex-direction: column; justify-content: space-between; min-height: 220px;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <div>
+              <span class="badge" style="background: {{ s.color }}15; color: {{ s.color }}; border: 1px solid {{ s.color }}40; font-weight: 700;">
+                {{ s.code|default:"COURSE" }}
+              </span>
+              <h2 style="font-size: 1.25rem; margin-top: 0.4rem; color: var(--text-main);">
+                <a href="{% url 'core:subject_detail' s.id %}" style="color: inherit;">{{ s.name }}</a>
+              </h2>
+            </div>
+            {% if s.target_grade %}
+              <span class="badge badge-medium" title="Target Grade">🎯 {{ s.target_grade }}</span>
+            {% endif %}
+          </div>
+
+          {% if s.teacher %}
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+              <i class="fa-solid fa-user-tie"></i> {{ s.teacher }}
+            </div>
+          {% endif %}
+
+          <!-- Progress -->
+          <div style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.3rem;">
+              <span>Tasks Completed</span>
+              <span style="font-weight: 700;">{{ s.completed_assignments }}/{{ s.total_assignments }} ({{ s.assignment_progress }}%)</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: {{ s.assignment_progress }}%; background: {{ s.color }};"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.85rem; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+          <span><i class="fa-solid fa-hourglass-half"></i> {{ s.total_study_hours }} hrs studied</span>
+          <div style="display: flex; gap: 0.5rem;">
+            <a href="{% url 'core:subject_detail' s.id %}" class="btn btn-sm btn-secondary" title="View Subject Detail">
+              <i class="fa-solid fa-eye"></i>
+            </a>
+            <a href="{% url 'core:subject_update' s.id %}" class="btn btn-sm btn-secondary" title="Edit Subject">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state card">
+    <div class="empty-state-emoji">📚</div>
+    <div class="empty-state-title">No subjects found!</div>
+    <p>Get started by adding your courses or subjects to track assignments, notes, and study sessions.</p>
+    <a href="{% url 'core:subject_create' %}" class="btn btn-primary" style="margin-top: 1rem;">
+      <i class="fa-solid fa-plus"></i> Add Your First Subject
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

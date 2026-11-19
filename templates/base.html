@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% if title %}{{ title }} | {% endif %}StudyMate – Academic Progress & Study Planning</title>
+  
+  <!-- FontAwesome 6 Local SVG Vector Engine (Guarantees zero missing icons/boxes!) -->
+  <script src="{% static 'js/fontawesome.all.min.js' %}" defer></script>
+  <!-- FontAwesome 6 Fallback CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  
+  <!-- FullCalendar 6 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Toast Notification Container for Messages -->
+  <div class="toast-container">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="toast toast-{{ message.tags|default:'info' }}">
+          <span>{{ message }}</span>
+          <button class="toast-close" onclick="this.parentElement.remove()">✕</button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="app-container">
+    {% if user.is_authenticated %}
+      <!-- Left Sidebar -->
+      {% include 'partials/sidebar.html' %}
+      
+      <!-- Main Content Area -->
+      <div class="main-wrapper">
+        <!-- Top Navigation Bar -->
+        {% include 'partials/navbar.html' %}
+        
+        <!-- Content Body -->
+        <main class="content-body">
+          {% block content %}{% endblock %}
+        </main>
+      </div>
+
+      <!-- Quick Add Modal (Shortcut 'N') -->
+      {% include 'partials/quick_add_modal.html' %}
+
+      <!-- Mobile Bottom Navigation -->
+      <nav class="mobile-bottom-nav">
+        <a href="{% url 'core:dashboard' %}" class="bottom-nav-item {% if active_nav == 'dashboard' %}active{% endif %}">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Home</span>
+        </a>
+        <a href="{% url 'core:assignment_list' %}" class="bottom-nav-item {% if active_nav == 'assignments' %}active{% endif %}">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Tasks</span>
+        </a>
+        <a href="{% url 'planner:timer' %}" class="bottom-nav-item {% if active_nav == 'timer' %}active{% endif %}">
+          <i class="fa-solid fa-stopwatch"></i>
+          <span>Timer</span>
+        </a>
+        <a href="{% url 'planner:calendar' %}" class="bottom-nav-item {% if active_nav == 'calendar' %}active{% endif %}">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Calendar</span>
+        </a>
+        <a href="{% url 'accounts:profile' %}" class="bottom-nav-item {% if active_nav == 'profile' %}active{% endif %}">
+          <i class="fa-solid fa-user"></i>
+          <span>Profile</span>
+        </a>
+      </nav>
+    {% else %}
+      <!-- Non-authenticated pages (Login, Register, Password Reset) -->
+      <div style="width: 100%;">
+        {% block auth_content %}{% endblock %}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Global JavaScript -->
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

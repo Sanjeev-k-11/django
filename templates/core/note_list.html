@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1>Study Notes & Knowledge Base</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Capture lecture summaries, revision cheat-sheets, formulas, and study materials.</p>
+  </div>
+  <a href="{% url 'core:note_create' %}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> Create Note
+  </a>
+</div>
+
+<!-- Search & Tag Filters -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+  <form method="GET" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+    <input type="text" name="q" value="{{ search_query }}" class="form-input" placeholder="Search note contents or titles..." style="flex: 1; min-width: 200px;">
+    
+    <select name="subject" class="form-select" style="width: auto; min-width: 180px;">
+      <option value="">All Subjects</option>
+      {% for s in subjects %}
+        <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit" class="btn btn-primary">
+      <i class="fa-solid fa-magnifying-glass"></i> Search
+    </button>
+    {% if search_query or selected_subject or selected_tag %}
+      <a href="{% url 'core:note_list' %}" class="btn btn-secondary">Clear</a>
+    {% endif %}
+  </form>
+
+  <!-- Tag Pills -->
+  {% if all_tags %}
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; align-items: center;">
+      <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Tags:</span>
+      {% for tag in all_tags %}
+        <a href="?tag={{ tag }}" class="badge" style="background: {% if selected_tag == tag %}var(--primary){% else %}var(--card-bg-subtle){% endif %}; color: {% if selected_tag == tag %}#fff{% else %}var(--text-main){% endif %}; text-decoration: none;">
+          #{{ tag }}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+<!-- Notes Grid -->
+{% if notes %}
+  <div class="notes-grid">
+    {% for n in notes %}
+      <div class="note-card {% if n.is_pinned %}pinned{% endif %}">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem;">
+            {% if n.subject %}
+              <span class="badge" style="background: {{ n.subject.color }}18; color: {{ n.subject.color }}; border: 1px solid {{ n.subject.color }}35;">
+                {{ n.subject.name }}
+              </span>
+            {% else %}
+              <span class="badge badge-not-started">General</span>
+            {% endif %}
+
+            <a href="{% url 'core:note_toggle_pin' n.id %}" title="{% if n.is_pinned %}Unpin Note{% else %}Pin to top{% endif %}" style="color: {% if n.is_pinned %}var(--warning){% else %}var(--text-muted){% endif %}; font-size: 1.1rem;">
+              <i class="fa-solid fa-thumbtack"></i>
+            </a>
+          </div>
+
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">
+            <a href="{% url 'core:note_detail' n.id %}" style="color: var(--text-main);">{{ n.title }}</a>
+          </h2>
+
+          <p style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.5; margin-bottom: 1rem;">
+            {{ n.content|truncatechars:140 }}
+          </p>
+
+          {% if n.tag_list %}
+            <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+              {% for t in n.tag_list %}
+                <span style="font-size: 0.75rem; color: var(--primary);">#{{ t }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.65rem; font-size: 0.8rem; color: var(--text-muted);">
+          <span>{{ n.updated_at|date:"M d, Y" }}</span>
+          <div style="display: flex; gap: 0.35rem;">
+            <a href="{% url 'core:note_download_txt' n.id %}" class="btn btn-sm btn-secondary btn-icon" title="Download .txt">
+              <i class="fa-solid fa-download"></i>
+            </a>
+            <a href="{% url 'core:note_print' n.id %}" target="_blank" class="btn btn-sm btn-secondary btn-icon" title="Print-friendly view">
+              <i class="fa-solid fa-print"></i>
+            </a>
+            <a href="{% url 'core:note_update' n.id %}" class="btn btn-sm btn-secondary btn-icon" title="Edit Note">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state card">
+    <div class="empty-state-emoji">📝</div>
+    <div class="empty-state-title">No notes found!</div>
+    <p>Write formulas, lecture summaries, and key concepts to prepare for exams.</p>
+    <a href="{% url 'core:note_create' %}" class="btn btn-primary" style="margin-top: 1rem;">
+      + Write First Note
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

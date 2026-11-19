@@ -1,0 +1,47 @@
+<div class="modal-overlay" id="quick-add-modal" onclick="if(event.target === this) closeAllModals()">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="card-title">
+        <i class="fa-solid fa-bolt" style="color: var(--warning);"></i>
+        <span>Quick Add Action (Press 'N')</span>
+      </div>
+      <button class="modal-close-btn" onclick="closeAllModals()">&times;</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; padding: 0.5rem 0;">
+      <a href="{% url 'core:assignment_create' %}" class="btn btn-secondary" style="justify-content: flex-start; padding: 0.85rem;">
+        <i class="fa-solid fa-list-check" style="color: var(--primary);"></i>
+        <span>New Assignment</span>
+      </a>
+
+      <a href="{% url 'core:note_create' %}" class="btn btn-secondary" style="justify-content: flex-start; padding: 0.85rem;">
+        <i class="fa-solid fa-note-sticky" style="color: var(--accent-teal);"></i>
+        <span>New Study Note</span>
+      </a>
+
+      <a href="{% url 'core:goal_create' %}" class="btn btn-secondary" style="justify-content: flex-start; padding: 0.85rem;">
+        <i class="fa-solid fa-bullseye" style="color: var(--success);"></i>
+        <span>New Study Goal</span>
+      </a>
+
+      <a href="{% url 'core:subject_create' %}" class="btn btn-secondary" style="justify-content: flex-start; padding: 0.85rem;">
+        <i class="fa-solid fa-book-open" style="color: var(--purple);"></i>
+        <span>New Subject</span>
+      </a>
+
+      <a href="{% url 'planner:exam_create' %}" class="btn btn-secondary" style="justify-content: flex-start; padding: 0.85rem;">
+        <i class="fa-solid fa-award" style="color: var(--danger);"></i>
+        <span>Schedule Exam</span>
+      </a>
+
+      <a href="{% url 'planner:timer' %}" class="btn btn-primary" style="justify-content: flex-start; padding: 0.85rem;">
+        <i class="fa-solid fa-stopwatch"></i>
+        <span>Start Timer</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 1rem; text-align: right;">
+      <button class="btn btn-secondary btn-sm" onclick="closeAllModals()">Cancel</button>
+    </div>
+  </div>
+</div>

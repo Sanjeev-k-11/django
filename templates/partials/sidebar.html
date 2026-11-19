@@ -1,0 +1,100 @@
+{% load static %}
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header" style="height: 78px; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border-soft);">
+    <a href="{% url 'core:dashboard' %}" class="public-brand" style="text-decoration: none;">
+      <div class="public-brand-monogram" style="width: 40px; height: 40px; font-size: 1.15rem;">SM</div>
+      <div>
+        <div class="public-brand-title" style="font-size: 1.35rem;">StudyMate</div>
+        <div class="public-brand-subtitle" style="font-size: 0.65rem;">ACADEMIC OS</div>
+      </div>
+    </a>
+  </div>
+
+  <nav class="sidebar-nav" style="padding: 1.25rem 0;">
+    <div class="nav-section-title">Overview</div>
+    <a href="{% url 'core:dashboard' %}" class="nav-item {% if active_nav == 'dashboard' %}active{% endif %}">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="{% url 'core:subject_list' %}" class="nav-item {% if active_nav == 'subjects' %}active{% endif %}">
+      <i class="fa-solid fa-book-open"></i>
+      <span>Subjects</span>
+    </a>
+
+    <div class="nav-section-title">Academics</div>
+    <a href="{% url 'core:assignment_list' %}" class="nav-item {% if active_nav == 'assignments' %}active{% endif %}">
+      <i class="fa-solid fa-list-check"></i>
+      <span>Assignments</span>
+    </a>
+    <a href="{% url 'core:goal_list' %}" class="nav-item {% if active_nav == 'goals' %}active{% endif %}">
+      <i class="fa-solid fa-bullseye"></i>
+      <span>Study Goals</span>
+    </a>
+    <a href="{% url 'core:note_list' %}" class="nav-item {% if active_nav == 'notes' %}active{% endif %}">
+      <i class="fa-solid fa-note-sticky"></i>
+      <span>Study Notes</span>
+    </a>
+
+    <div class="nav-section-title">Planning & Tools</div>
+    <a href="{% url 'planner:timer' %}" class="nav-item {% if active_nav == 'timer' %}active{% endif %}">
+      <i class="fa-solid fa-stopwatch"></i>
+      <span>Pomodoro Timer</span>
+    </a>
+    <a href="{% url 'planner:calendar' %}" class="nav-item {% if active_nav == 'calendar' %}active{% endif %}">
+      <i class="fa-solid fa-calendar-days"></i>
+      <span>Academic Calendar</span>
+    </a>
+    <a href="{% url 'planner:timetable' %}" class="nav-item {% if active_nav == 'timetable' %}active{% endif %}">
+      <i class="fa-solid fa-calendar-week"></i>
+      <span>Weekly Timetable</span>
+    </a>
+    <a href="{% url 'planner:exam_list' %}" class="nav-item {% if active_nav == 'exams' %}active{% endif %}">
+      <i class="fa-solid fa-graduation-cap"></i>
+      <span>Exams & GPA</span>
+    </a>
+    <a href="{% url 'planner:reminders' %}" class="nav-item {% if active_nav == 'reminders' %}active{% endif %}">
+      <i class="fa-solid fa-bell"></i>
+      <span>Reminders</span>
+    </a>
+
+    <div class="nav-section-title">Insights & Data</div>
+    <a href="{% url 'analytics:dashboard' %}" class="nav-item {% if active_nav == 'analytics' %}active{% endif %}">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Analytics & Reports</span>
+    </a>
+
+    <!-- Direct Admin Panel Link -->
+    <div class="nav-section-title">Database Administration</div>
+    <a href="/admin/" target="_blank" class="nav-item" style="color: var(--luxury-rose);">
+      <i class="fa-solid fa-database" style="color: var(--luxury-rose);"></i>
+      <span>Django Admin Panel ↗</span>
+    </a>
+    <a href="{% url 'core:home' %}" class="nav-item">
+      <i class="fa-solid fa-globe"></i>
+      <span>Public Home Page</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-quick-profile">
+      <div class="user-avatar-sm" style="border: 2px solid var(--luxury-rose-border);">
+        {% if user.profile.avatar_url %}
+          <img src="{{ user.profile.avatar_url }}" alt="{{ user.username }}">
+        {% else %}
+          <span>{{ user.first_name|first|default:user.username|first|upper }}</span>
+        {% endif %}
+      </div>
+      <div style="flex: 1; overflow: hidden;">
+        <div style="font-weight: 700; font-size: 0.92rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+          {{ user.get_full_name|default:user.username }}
+        </div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+          {{ user.profile.course_grade|default:"Student" }}
+        </div>
+      </div>
+      <a href="{% url 'accounts:logout' %}" title="Log Out" style="color: var(--text-muted); font-size: 1.1rem;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </a>
+    </div>
+  </div>
+</aside>

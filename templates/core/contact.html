@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block auth_content %}
+<!-- Reuse Public Navbar -->
+<header class="public-navbar">
+  <a href="{% url 'core:home' %}" class="public-brand">
+    <div class="public-brand-monogram">SM</div>
+    <div>
+      <div class="public-brand-title">StudyMate</div>
+      <div class="public-brand-subtitle">ACADEMIC OS &bull; EST. 2026</div>
+    </div>
+  </a>
+
+  <ul class="public-nav-links">
+    <li><a href="{% url 'core:home' %}" class="public-pill-link">Home</a></li>
+    <li><a href="{% url 'core:home' %}#study-pillars" class="public-pill-link">Study Pillars</a></li>
+    <li><a href="{% url 'core:about' %}" class="public-pill-link">About Us</a></li>
+    <li><a href="{% url 'core:contact' %}" class="public-pill-link active">Support & FAQ</a></li>
+  </ul>
+
+  <div class="public-actions-right">
+    <button class="action-icon-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
+      <i class="fa-solid fa-moon" id="theme-toggle-icon"></i>
+    </button>
+    {% if user.is_authenticated %}
+      <a href="{% url 'core:dashboard' %}" class="public-btn-signin" style="background: linear-gradient(135deg, #1E40AF, #2563EB);">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>My Dashboard</span>
+      </a>
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="public-btn-signin">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span>Sign In</span>
+      </a>
+    {% endif %}
+  </div>
+</header>
+
+<div class="section-wrapper-luxury" style="max-width: 1000px; margin: 3rem auto;">
+  <div style="text-align: center; margin-bottom: 3.5rem;">
+    <div class="section-tag-badge">STUDENT ASSISTANCE</div>
+    <h1 style="font-size: 3rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
+      How Can We Support Your Studies?
+    </h1>
+    <div class="gradient-divider" style="margin-bottom: 1.25rem;"></div>
+    <p style="font-size: 1.15rem; color: var(--text-muted); max-width: 650px; margin: 0 auto;">
+      Have a question about study streak calculation, Pomodoro custom intervals, or GPA scoring? We're here to help.
+    </p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 4rem;">
+    <!-- WhatsApp Direct Help Card -->
+    <div class="card" style="border-radius: 24px; padding: 2.5rem; text-align: center; border: 1px solid #A7F3D0; background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);">
+      <div style="width: 70px; height: 70px; border-radius: 50%; background: #10B981; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 1.25rem auto; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">
+        <i class="fa-brands fa-whatsapp"></i>
+      </div>
+      <h2 style="font-size: 1.6rem; color: #065F46; margin-bottom: 0.5rem;">Direct WhatsApp Support</h2>
+      <p style="color: #047857; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.75rem;">
+        Need quick assistance with your study setup or feature walkthrough? Chat directly with our student support team.
+      </p>
+      <a href="https://wa.me/?text=Hello%20StudyMate%20Team%2C%20I%20have%20a%20question%20about%20my%20study%20planner" target="_blank" class="hero-cta-btn" style="background: linear-gradient(135deg, #059669, #10B981); display: inline-flex;">
+        <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i>
+        <span>Start WhatsApp Chat</span>
+      </a>
+    </div>
+
+    <!-- Email Help Card -->
+    <div class="card" style="border-radius: 24px; padding: 2.5rem; text-align: center; border: 1px solid #BFDBFE; background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);">
+      <div style="width: 70px; height: 70px; border-radius: 50%; background: #2563EB; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.25rem auto; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);">
+        <i class="fa-solid fa-envelope"></i>
+      </div>
+      <h2 style="font-size: 1.6rem; color: #1E40AF; margin-bottom: 0.5rem;">Academic Help Desk</h2>
+      <p style="color: #1D4ED8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.75rem;">
+        Send us an email regarding academic integrations, feedback, or custom feature requests for your institution.
+      </p>
+      <a href="mailto:support@studymate.edu" class="hero-cta-btn" style="background: linear-gradient(135deg, #1E40AF, #2563EB); display: inline-flex;">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>support@studymate.edu</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Frequently Asked Questions -->
+  <div class="card" style="border-radius: 24px; padding: 2.5rem; box-shadow: var(--shadow-luxury); border: 1px solid var(--card-border-soft);">
+    <h2 style="font-size: 2rem; margin-bottom: 1.75rem; text-align: center; color: var(--text-main);">
+      Frequently Asked Questions
+    </h2>
+
+    <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+      <details style="padding: 1rem 1.25rem; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; cursor: pointer;">
+        <summary style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">How does the Study Streak work?</summary>
+        <p style="margin-top: 0.75rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+          Your streak increments by 1 for every consecutive day on which you log at least one study session (or complete a Pomodoro focus cycle). If you studied yesterday, your streak remains active today until midnight.
+        </p>
+      </details>
+
+      <details style="padding: 1rem 1.25rem; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; cursor: pointer;">
+        <summary style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">Can other students see my grades or notes?</summary>
+        <p style="margin-top: 0.75rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+          No. StudyMate enforces strict database-level user isolation (`request.user`). All subjects, notes, test scores, and sessions are accessible exclusively to your authenticated account.
+        </p>
+      </details>
+
+      <details style="padding: 1rem 1.25rem; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; cursor: pointer;">
+        <summary style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">How is my overall GPA calculated?</summary>
+        <p style="margin-top: 0.75rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+          When you enter exam scores (marks obtained and total marks), StudyMate computes weighted percentages and maps them onto the standard 4.0 academic scale (90%+ = 4.0, 80%+ = 3.5, etc.).
+        </p>
+      </details>
+
+      <details style="padding: 1rem 1.25rem; background: var(--bg); border: 1px solid var(--border); border-radius: 14px; cursor: pointer;">
+        <summary style="font-weight: 700; font-size: 1.1rem; color: var(--text-main);">How do I export my data?</summary>
+        <p style="margin-top: 0.75rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+          Visit the Analytics page and click "Export Tasks CSV" or "Export Study Logs CSV". You can also open the formal Academic Progress Report to save a clean PDF.
+        </p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<!-- Floating WhatsApp Support Pill -->
+<a href="https://wa.me/?text=Hello%20StudyMate%20Team%2C%20I%20have%20a%20question" target="_blank" class="floating-whatsapp-pill" title="Chat with Academic Support on WhatsApp">
+  <i class="fa-brands fa-whatsapp" style="font-size: 1.35rem;"></i>
+  <span>WhatsApp Chat</span>
+</a>
+{% endblock %}

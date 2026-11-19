@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h1>Pomodoro Study Timer</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Boost focus, eliminate distractions, and automatically log your study sessions.</p>
+    </div>
+  </div>
+
+  <!-- Stats Banner for Today & Week -->
+  <div class="stats-grid" style="margin-bottom: 2rem;">
+    <div class="stat-card">
+      <div class="stat-icon primary">
+        <i class="fa-solid fa-clock"></i>
+      </div>
+      <div>
+        <div class="stat-val" id="timer-today-hours">{{ study_summary.today_hours }} hrs</div>
+        <div class="stat-label">Studied Today</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon teal">
+        <i class="fa-solid fa-calendar-week"></i>
+      </div>
+      <div>
+        <div class="stat-val" id="timer-week-hours">{{ study_summary.week_hours }} hrs</div>
+        <div class="stat-label">Studied This Week</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon danger">
+        <i class="fa-solid fa-fire"></i>
+      </div>
+      <div>
+        <div class="stat-val" id="timer-streak-val">{{ streak }} Days</div>
+        <div class="stat-label">Current Streak 🔥</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pomodoro Timer Main Card -->
+  <div class="card" style="text-align: center; padding: 2.5rem 2rem; margin-bottom: 2rem;">
+    
+    <!-- Mode Switcher Tabs -->
+    <div style="display: inline-flex; gap: 0.5rem; background: var(--bg); padding: 0.4rem; border-radius: var(--radius-full); margin-bottom: 1.5rem;">
+      <button type="button" class="btn btn-primary btn-sm" id="timer-tab-focus" style="border-radius: var(--radius-full);">Focus (25m)</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="timer-tab-short" style="border-radius: var(--radius-full);">Short Break (5m)</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="timer-tab-long" style="border-radius: var(--radius-full);">Long Break (15m)</button>
+    </div>
+
+    <!-- Animated Timer Circle Display -->
+    <div class="timer-circle-wrap" id="timer-circle">
+      <div class="timer-mode-label" id="timer-mode-label">Focus Session</div>
+      <div class="timer-time-display" id="timer-time-text">25:00</div>
+    </div>
+
+    <!-- Timer Subject & Notes Selector -->
+    <div style="max-width: 450px; margin: 1.5rem auto; display: flex; flex-direction: column; gap: 0.75rem; text-align: left;">
+      <div>
+        <label class="form-label" style="font-size: 0.85rem;">Studying Subject</label>
+        <select id="timer-subject-select" class="form-select">
+          <option value="">General Study (No specific subject)</option>
+          {% for s in subjects %}
+            <option value="{{ s.id }}">{{ s.name }} ({{ s.code|default:"Course" }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label" style="font-size: 0.85rem;">Session Notes / Goal</label>
+        <input type="text" id="timer-notes-input" class="form-input" placeholder="e.g. Chapter 4 Review & Exercises">
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+      <button type="button" class="btn btn-primary btn-lg" id="timer-start-btn" style="min-width: 140px;">
+        <i class="fa-solid fa-play"></i> Start Focus
+      </button>
+
+      <button type="button" class="btn btn-warning btn-lg" id="timer-pause-btn" style="min-width: 140px; display: none;">
+        <i class="fa-solid fa-pause"></i> Pause
+      </button>
+
+      <button type="button" class="btn btn-secondary btn-lg" id="timer-reset-btn">
+        <i class="fa-solid fa-rotate-left"></i> Reset
+      </button>
+
+      <button type="button" class="btn btn-secondary btn-lg" id="timer-log-manual-btn" title="Manually record study session">
+        <i class="fa-solid fa-pen"></i> Log Time
+      </button>
+    </div>
+
+    <!-- Interval Settings Accordion / Customizer -->
+    <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.25rem;">
+      <details style="max-width: 450px; margin: 0 auto; text-align: left; font-size: 0.9rem; color: var(--text-muted);">
+        <summary style="cursor: pointer; font-weight: 600;">Custom Interval Durations</summary>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-top: 0.75rem;">
+          <div>
+            <label style="font-size: 0.75rem;">Focus (min)</label>
+            <input type="number" id="custom-focus-min" class="form-input" value="25" min="1" max="180">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem;">Short Break (min)</label>
+            <input type="number" id="custom-short-min" class="form-input" value="5" min="1" max="60">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem;">Long Break (min)</label>
+            <input type="number" id="custom-long-min" class="form-input" value="15" min="1" max="90">
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Recent Study Sessions Log -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i>
+        <span>Recent Study Session Logs</span>
+      </div>
+      <span style="font-size: 0.85rem; color: var(--text-muted);">Total All Time: {{ study_summary.all_time_hours }} hrs</span>
+    </div>
+
+    {% if recent_sessions %}
+      <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+        {% for s in recent_sessions %}
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--border);">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <strong style="color: var(--text-main); font-size: 0.95rem;">
+                  {{ s.subject.name|default:"General Study Session" }}
+                </strong>
+                <span class="badge badge-completed">{{ s.duration_minutes }} minutes</span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">
+                {{ s.start|date:"M d, Y - H:i" }} {% if s.notes %}&bull; <em>"{{ s.notes }}"</em>{% endif %}
+              </div>
+            </div>
+
+            <form action="{% url 'planner:session_delete' s.id %}" method="POST" onsubmit="return confirm('Delete this study log entry?');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger btn-icon" title="Delete session log">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color: var(--text-muted); text-align: center; padding: 1.5rem 0;">
+        No study sessions logged yet. Complete a 25-minute Pomodoro cycle to log your first session!
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/timer.js' %}"></script>
+{% endblock %}

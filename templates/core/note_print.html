@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ note.title }} - StudyMate Notes</title>
+  <style>
+    body {
+      font-family: "Times New Roman", Times, serif;
+      line-height: 1.6;
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      color: #000;
+      background: #fff;
+    }
+    .header {
+      border-bottom: 2px solid #000;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .meta {
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .content {
+      font-size: 1.15rem;
+      white-space: pre-wrap;
+      line-height: 1.8;
+    }
+    .tags {
+      margin-top: 2rem;
+      border-top: 1px solid #ccc;
+      padding-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #444;
+    }
+    @media print {
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="margin-bottom: 1.5rem;">
+    <button onclick="window.print()" style="padding: 0.5rem 1rem; font-family: 'Times New Roman', serif; font-size: 1rem; cursor: pointer;">
+      🖨️ Click to Print / Save as PDF
+    </button>
+  </div>
+
+  <div class="header">
+    <div class="title">{{ note.title }}</div>
+    <div class="meta">
+      <strong>Subject:</strong> {{ note.subject.name|default:"General Study" }} &bull; 
+      <strong>Student:</strong> {{ note.user.get_full_name|default:note.user.username }} &bull; 
+      <strong>Date:</strong> {{ note.created_at|date:"F d, Y" }}
+    </div>
+  </div>
+
+  <div class="content">{{ note.content }}</div>
+
+  {% if note.tags %}
+    <div class="tags">
+      <strong>Tags:</strong> {{ note.tags }}
+    </div>
+  {% endif %}
+</body>
+</html>

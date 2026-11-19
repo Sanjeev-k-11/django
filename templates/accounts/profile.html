@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 850px; margin: 0 auto;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div>
+      <h1>Profile & Academic Settings</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">Manage your personal details, academic institution, and study preferences.</p>
+    </div>
+    <a href="{% url 'accounts:password_change' %}" class="btn btn-secondary">
+      <i class="fa-solid fa-key"></i>
+      <span>Change Password</span>
+    </a>
+  </div>
+
+  <div class="card">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div style="display: flex; gap: 2rem; align-items: flex-start; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 2rem; flex-wrap: wrap;">
+        <!-- Avatar Preview & Upload -->
+        <div style="text-align: center;">
+          <div style="width: 110px; height: 110px; border-radius: var(--radius-full); border: 3px solid var(--primary); overflow: hidden; margin: 0 auto 1rem auto; display: flex; align-items: center; justify-content: center; background: var(--primary-light); font-size: 2.5rem; font-weight: 700; color: var(--primary);">
+            {% if user.profile.avatar_url %}
+              <img src="{{ user.profile.avatar_url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+              <span>{{ user.first_name|first|default:user.username|first|upper }}</span>
+            {% endif %}
+          </div>
+          <label class="form-label" style="font-size: 0.85rem; margin-bottom: 0.25rem;">Change Avatar</label>
+          {{ p_form.avatar }}
+          {% if p_form.avatar.errors %}
+            <div class="form-error">{{ p_form.avatar.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Basic User Info -->
+        <div style="flex: 1; min-width: 280px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="id_first_name">First Name</label>
+              {{ u_form.first_name }}
+              {% if u_form.first_name.errors %}
+                <div class="form-error">{{ u_form.first_name.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="id_last_name">Last Name</label>
+              {{ u_form.last_name }}
+              {% if u_form.last_name.errors %}
+                <div class="form-error">{{ u_form.last_name.errors.0 }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="id_email">Email Address</label>
+            {{ u_form.email }}
+            {% if u_form.email.errors %}
+              <div class="form-error">{{ u_form.email.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Academic & Target Details -->
+      <h3 style="margin-bottom: 1rem;">Academic Details & Study Target</h3>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="id_institution">College / University / School</label>
+          {{ p_form.institution }}
+          {% if p_form.institution.errors %}
+            <div class="form-error">{{ p_form.institution.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_course_grade">Course / Major / Grade</label>
+          {{ p_form.course_grade }}
+          {% if p_form.course_grade.errors %}
+            <div class="form-error">{{ p_form.course_grade.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_daily_study_target_hours">
+          <i class="fa-solid fa-bullseye" style="color: var(--primary);"></i>
+          Daily Study Target (Hours)
+        </label>
+        {{ p_form.daily_study_target_hours }}
+        <div class="form-help-text">Set how many hours you plan to dedicate to focused study every day.</div>
+        {% if p_form.daily_study_target_hours.errors %}
+          <div class="form-error">{{ p_form.daily_study_target_hours.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_bio">Bio / Academic Motivation</label>
+        {{ p_form.bio }}
+        {% if p_form.bio.errors %}
+          <div class="form-error">{{ p_form.bio.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+        <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>Save Profile Changes</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

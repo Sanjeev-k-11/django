@@ -1,0 +1,404 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block auth_content %}
+<!-- Public Header (Modeled directly after Image 1) -->
+<header class="public-navbar">
+  <a href="{% url 'core:home' %}" class="public-brand">
+    <div class="public-brand-monogram">SM</div>
+    <div>
+      <div class="public-brand-title">StudyMate</div>
+      <div class="public-brand-subtitle">ACADEMIC OS &bull; EST. 2026</div>
+    </div>
+  </a>
+
+  <!-- Navigation Pill Links -->
+  <ul class="public-nav-links">
+    <li><a href="{% url 'core:home' %}" class="public-pill-link active">Home</a></li>
+    <li>
+      <a href="#study-pillars" class="public-pill-link">
+        Study Pillars <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem;"></i>
+      </a>
+    </li>
+    <li>
+      <a href="{% if user.is_authenticated %}{% url 'core:assignment_list' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="public-pill-link">
+        <span class="nav-dot-indicator"></span> Deadlines & Tasks
+      </a>
+    </li>
+    <li>
+      <a href="{% if user.is_authenticated %}{% url 'planner:timer' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="public-pill-link">
+        Focus Timer
+      </a>
+    </li>
+    <li>
+      <a href="{% if user.is_authenticated %}{% url 'planner:timetable' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="public-pill-link">
+        Timetable
+      </a>
+    </li>
+    <li><a href="{% url 'core:about' %}" class="public-pill-link">About Us</a></li>
+    <li><a href="{% url 'core:contact' %}" class="public-pill-link">Support</a></li>
+  </ul>
+
+  <!-- Right Actions: Search Pill, Theme, Sign In -->
+  <div class="public-actions-right">
+    <form action="{% url 'core:global_search' %}" method="GET" class="public-search-pill">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" name="q" placeholder="Search subjects, tasks..." autocomplete="off">
+    </form>
+
+    <button class="action-icon-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
+      <i class="fa-solid fa-moon" id="theme-toggle-icon"></i>
+    </button>
+
+    {% if user.is_authenticated %}
+      <a href="{% url 'core:dashboard' %}" class="public-btn-signin" style="background: linear-gradient(135deg, #1E40AF, #2563EB);">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>My Dashboard</span>
+      </a>
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="public-btn-signin">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span>Sign In</span>
+      </a>
+    {% endif %}
+  </div>
+</header>
+
+<!-- Luxury Hero Carousel Banner (Directly styled after Image 1) -->
+<div class="luxury-hero-container">
+  <div class="hero-slider-wrapper" id="hero-slider">
+    
+    <!-- Slide 1: Primary Overview -->
+    <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1600&q=80');">
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-slide-content">
+        <div class="hero-badge-pill">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>StudyMate &bull; Academic Excellence Since 2026</span>
+        </div>
+        <h1 class="hero-heading">
+          Handcrafted Academic Planning & Progress Mastery
+        </h1>
+        <p class="hero-subtext">
+          Timeless clarity crafted for university scholars, high achievers, and ambitious students. Explore structured courses, seamless deadline tracking, and deep study momentum.
+        </p>
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <a href="#study-pillars" class="hero-cta-btn">
+            <span>Explore Study Pillars</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'core:dashboard' %}" class="btn btn-secondary" style="border-radius: 9999px; padding: 0.9rem 1.8rem; font-weight: 700;">
+              Go to Workspace &rarr;
+            </a>
+          {% else %}
+            <a href="{% url 'accounts:register' %}" class="btn btn-secondary" style="border-radius: 9999px; padding: 0.9rem 1.8rem; font-weight: 700;">
+              Create Free Account &rarr;
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Pomodoro & Habits -->
+    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1600&q=80');">
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-slide-content">
+        <div class="hero-badge-pill" style="color: var(--accent-teal); border-color: #99F6E4; background: #F0FDFA;">
+          <i class="fa-solid fa-stopwatch"></i>
+          <span>Scientific Study Habits & Focus Cycles</span>
+        </div>
+        <h1 class="hero-heading">
+          Deep Focus Pomodoro Timer & Consecutive Streaks
+        </h1>
+        <p class="hero-subtext">
+          Eliminate digital distractions with 25/5 interval cycles, subject-linked notes, acoustic bell notifications, and real-time streak preservation that motivates daily achievement.
+        </p>
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <a href="{% if user.is_authenticated %}{% url 'planner:timer' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="hero-cta-btn" style="background: linear-gradient(135deg, #0D9488, #14B8A6);">
+            <span>Launch Study Timer</span>
+            <i class="fa-solid fa-stopwatch"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Exams & Timetable -->
+    <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1600&q=80');">
+      <div class="hero-slide-overlay"></div>
+      <div class="hero-slide-content">
+        <div class="hero-badge-pill" style="color: var(--purple); border-color: #DDD6FE; background: #F5F3FF;">
+          <i class="fa-solid fa-award"></i>
+          <span>Assessment Prep & Grade Projections</span>
+        </div>
+        <h1 class="hero-heading">
+          Exam Countdowns, Timetables & GPA Analytics
+        </h1>
+        <p class="hero-subtext">
+          Never miss a midterm with live days-left countdowns, room schedules, post-exam scoring, and automatic GPA calculation on a 4.0 scale.
+        </p>
+        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+          <a href="{% if user.is_authenticated %}{% url 'planner:exam_list' %}{% else %}{% url 'accounts:login' %}{% endif %}" class="hero-cta-btn" style="background: linear-gradient(135deg, #7C3AED, #9333EA);">
+            <span>Track Exams & GPA</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carousel Navigation Controls -->
+    <button class="carousel-arrow-btn carousel-arrow-prev" id="carousel-prev" title="Previous Slide">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="carousel-arrow-btn carousel-arrow-next" id="carousel-next" title="Next Slide">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Slide Indicator Dots -->
+    <div class="carousel-dots" id="carousel-dots">
+      <span class="carousel-dot active" data-index="0"></span>
+      <span class="carousel-dot" data-index="1"></span>
+      <span class="carousel-dot" data-index="2"></span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Category Grid Section (Directly modeled after Image 2) -->
+<section class="section-wrapper-luxury" id="study-pillars" style="scroll-margin-top: 100px;">
+  <div class="section-header-center">
+    <div class="section-tag-badge">CURATED ACADEMIC PILLARS</div>
+    <h2 class="section-title-luxury">Study By Category</h2>
+    <div class="gradient-divider"></div>
+  </div>
+
+  <div class="category-grid-luxury">
+    {% for cat in categories %}
+      <div class="category-card-luxury">
+        <div>
+          <!-- Squircle Icon with subtle gradient background and pastel border -->
+          <div class="squircle-icon-wrap" style="background-color: {{ cat.bg }}; color: {{ cat.color }}; border: 1px solid {{ cat.color }}35;">
+            <i class="fa-solid {{ cat.icon }}"></i>
+          </div>
+
+          <h3 class="category-card-title">{{ cat.title }}</h3>
+          <p class="category-card-desc">{{ cat.desc }}</p>
+        </div>
+
+        <a href="{{ cat.url }}" class="category-browse-pill">
+          <span>{{ cat.action }}</span>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Live Academic Statistics Counter Banner -->
+<section style="background: linear-gradient(135deg, #FFF9F5 0%, #FFFFFF 100%); border-top: 1px solid var(--card-border-soft); border-bottom: 1px solid var(--card-border-soft); padding: 4rem 1.5rem; margin: 4rem 0;">
+  <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; text-align: center;">
+    <div>
+      <div style="font-size: 2.8rem; font-weight: 700; color: var(--luxury-rose); font-family: 'Times New Roman', serif;">98.4%</div>
+      <div style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-top: 0.25rem;">On-Time Submission Rate</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Empowered by subtask checklists & countdowns</div>
+    </div>
+
+    <div>
+      <div style="font-size: 2.8rem; font-weight: 700; color: var(--accent-teal); font-family: 'Times New Roman', serif;">15,000+</div>
+      <div style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-top: 0.25rem;">Focus Hours Logged</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Through integrated Pomodoro study sessions</div>
+    </div>
+
+    <div>
+      <div style="font-size: 2.8rem; font-weight: 700; color: var(--purple); font-family: 'Times New Roman', serif;">4.0 Scale</div>
+      <div style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-top: 0.25rem;">Automatic GPA Calculator</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Instant academic projection across all semesters</div>
+    </div>
+
+    <div>
+      <div style="font-size: 2.8rem; font-weight: 700; color: var(--luxury-gold); font-family: 'Times New Roman', serif;">100%</div>
+      <div style="font-size: 1rem; font-weight: 700; color: var(--text-main); margin-top: 0.25rem;">Privacy & User Isolation</div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Your notes, exams, and grades belong to you alone</div>
+    </div>
+  </div>
+</section>
+
+<!-- Student Reviews / Testimonials -->
+<section class="section-wrapper-luxury">
+  <div class="section-header-center">
+    <div class="section-tag-badge">STUDENT EXPERIENCES</div>
+    <h2 class="section-title-luxury">Loved by Scholars Worldwide</h2>
+    <div class="gradient-divider"></div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.75rem;">
+    {% for rev in reviews %}
+      <div class="card" style="border-radius: 22px; padding: 2.25rem; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury);">
+        <div style="display: flex; gap: 0.25rem; color: #F59E0B; margin-bottom: 1rem; font-size: 1.1rem;">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <p style="font-size: 1.05rem; line-height: 1.7; color: var(--text-main); font-style: italic; margin-bottom: 1.5rem;">
+          "{{ rev.text }}"
+        </p>
+        <div style="border-top: 1px solid var(--border); padding-top: 1rem; display: flex; align-items: center; gap: 0.85rem;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--luxury-rose-light); color: var(--luxury-rose); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem;">
+            {{ rev.name|first }}
+          </div>
+          <div>
+            <div style="font-weight: 700; font-size: 1rem; color: var(--text-main);">{{ rev.name }}</div>
+            <div style="font-size: 0.82rem; color: var(--text-muted);">{{ rev.role }}</div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Call to Action Banner -->
+<section style="max-width: 1380px; margin: 4rem auto; padding: 0 1.5rem;">
+  <div style="background: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%); border-radius: 28px; padding: 4.5rem 2.5rem; text-align: center; color: #fff; box-shadow: var(--shadow-luxury);">
+    <h2 style="font-size: 2.8rem; color: #fff; margin-bottom: 1rem;">Start Your Most Productive Semester Today</h2>
+    <p style="font-size: 1.15rem; opacity: 0.9; max-width: 650px; margin: 0 auto 2rem auto; line-height: 1.7;">
+      Join thousands of scholars who study smarter, manage deadlines with serenity, and hit their highest academic potential.
+    </p>
+    {% if user.is_authenticated %}
+      <a href="{% url 'core:dashboard' %}" class="hero-cta-btn" style="background: #FFFFFF; color: #312E81 !important;">
+        <span>Open My Workspace</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    {% else %}
+      <a href="{% url 'accounts:register' %}" class="hero-cta-btn" style="background: #FFFFFF; color: #312E81 !important;">
+        <span>Get Started Free</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Floating WhatsApp / Academic Support Pill (Exact Match to Reference Screenshot) -->
+<a href="{% url 'core:contact' %}" class="floating-whatsapp-pill" title="Chat with Academic Support on WhatsApp">
+  <i class="fa-brands fa-whatsapp" style="font-size: 1.35rem;"></i>
+  <span>WhatsApp Chat</span>
+</a>
+
+<!-- Floating Scroll to Top Button -->
+<button class="floating-scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Back to top">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- Luxury Public Footer -->
+<footer class="luxury-footer">
+  <div class="luxury-footer-grid">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+        <div class="public-brand-monogram" style="width: 38px; height: 38px; font-size: 1.1rem;">SM</div>
+        <span style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);">StudyMate</span>
+      </div>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; max-width: 380px;">
+        Student Study Planning & Academic Progress Management System. Crafted with care for universities, scholars, and lifelong learners worldwide.
+      </p>
+    </div>
+
+    <div>
+      <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 1rem; color: var(--text-main);">Study Pillars</div>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.92rem;">
+        <li><a href="{% if user.is_authenticated %}{% url 'core:subject_list' %}{% else %}{% url 'accounts:login' %}{% endif %}" style="color: var(--text-muted);">Enrolled Subjects</a></li>
+        <li><a href="{% if user.is_authenticated %}{% url 'core:assignment_list' %}{% else %}{% url 'accounts:login' %}{% endif %}" style="color: var(--text-muted);">Assignments & Deadlines</a></li>
+        <li><a href="{% if user.is_authenticated %}{% url 'planner:timer' %}{% else %}{% url 'accounts:login' %}{% endif %}" style="color: var(--text-muted);">Pomodoro Focus Timer</a></li>
+        <li><a href="{% if user.is_authenticated %}{% url 'planner:timetable' %}{% else %}{% url 'accounts:login' %}{% endif %}" style="color: var(--text-muted);">Weekly Class Timetable</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 1rem; color: var(--text-main);">Platform</div>
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.55rem; font-size: 0.92rem;">
+        <li><a href="{% url 'core:about' %}" style="color: var(--text-muted);">About Us</a></li>
+        <li><a href="{% url 'core:contact' %}" style="color: var(--text-muted);">Contact & Support</a></li>
+        <li><a href="{% if user.is_authenticated %}{% url 'analytics:dashboard' %}{% else %}{% url 'accounts:login' %}{% endif %}" style="color: var(--text-muted);">Analytics & Reports</a></li>
+        <li><a href="{% url 'accounts:login' %}" style="color: var(--text-muted);">Student Login</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 1rem; color: var(--text-main);">Academic Integrity</div>
+      <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.6;">
+        Designed for academic honesty, structured revision, and self-directed scholarly growth.
+      </p>
+      <div style="margin-top: 1rem; font-size: 0.88rem; color: var(--luxury-rose); font-weight: 700;">
+        <i class="fa-solid fa-shield-halved"></i> 100% Student Data Privacy
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1380px; margin: 1.5rem auto 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+    <div>&copy; 2026 StudyMate System. All rights reserved. Built with Django & Python.</div>
+    <div style="display: flex; gap: 1.5rem;">
+      <a href="{% url 'core:about' %}" style="color: inherit;">Privacy Policy</a>
+      <a href="{% url 'core:about' %}" style="color: inherit;">Terms of Service</a>
+      <a href="{% url 'core:contact' %}" style="color: inherit;">Help Center</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Hero Carousel Auto-play and Interactive Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+    let currentIdx = 0;
+    let autoPlayTimer = null;
+
+    function showSlide(index) {
+      if (index >= slides.length) index = 0;
+      if (index < 0) index = slides.length - 1;
+      currentIdx = index;
+
+      slides.forEach(s => s.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+
+      slides[currentIdx].classList.add('active');
+      dots[currentIdx].classList.add('active');
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        showSlide(currentIdx + 1);
+        resetAutoPlay();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        showSlide(currentIdx - 1);
+        resetAutoPlay();
+      });
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        const idx = parseInt(e.target.getAttribute('data-index'));
+        showSlide(idx);
+        resetAutoPlay();
+      });
+    });
+
+    function startAutoPlay() {
+      autoPlayTimer = setInterval(() => {
+        showSlide(currentIdx + 1);
+      }, 6000);
+    }
+
+    function resetAutoPlay() {
+      clearInterval(autoPlayTimer);
+      startAutoPlay();
+    }
+
+    startAutoPlay();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% load static %}
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="menu-toggle" id="menu-toggle" title="Toggle Navigation Menu">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="page-title-header">
+      {{ title|default:"StudyMate Workspace" }}
+    </div>
+  </div>
+
+  <!-- Global Search Bar -->
+  <form action="{% url 'core:global_search' %}" method="GET" class="topbar-search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search subjects, tasks, notes... (Press Enter)" autocomplete="off">
+  </form>
+
+  <div class="topbar-right">
+    <!-- Quick Add Button -->
+    <button class="btn btn-primary btn-sm" onclick="openQuickAddModal()" title="Press 'N' anywhere to quick add">
+      <i class="fa-solid fa-plus"></i>
+      <span>Quick Add</span>
+    </button>
+
+    <!-- Dark Mode Toggle Button -->
+    <button class="action-icon-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
+      <i class="fa-solid fa-moon" id="theme-toggle-icon"></i>
+    </button>
+
+    <!-- Notification Bell with Dropdown -->
+    <div style="position: relative;">
+      <button class="action-icon-btn" id="notif-toggle-btn" title="Notifications">
+        <i class="fa-solid fa-bell"></i>
+        {% if nav_notification_count > 0 %}
+          <span class="badge-dot">{{ nav_notification_count }}</span>
+        {% endif %}
+      </button>
+
+      <div class="notification-dropdown" id="notif-dropdown">
+        <div class="notification-header">
+          <span>Notifications</span>
+          <span class="badge badge-high">{{ nav_notification_count }} urgent</span>
+        </div>
+        <div class="notification-body">
+          {% if nav_overdue_assignments %}
+            <div style="padding: 0.5rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: var(--danger); background: var(--danger-light); text-transform: uppercase;">
+              ⚠️ Overdue Tasks
+            </div>
+            {% for a in nav_overdue_assignments %}
+              <a href="{% url 'core:assignment_detail' a.id %}" class="notification-item">
+                <i class="fa-solid fa-circle-exclamation" style="color: var(--danger); margin-top: 3px;"></i>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-main);">{{ a.title }}</div>
+                  <div style="font-size: 0.78rem; color: var(--danger);">{{ a.countdown_text }} &bull; {{ a.subject.name }}</div>
+                </div>
+              </a>
+            {% endfor %}
+          {% endif %}
+
+          {% if nav_due_soon_assignments %}
+            <div style="padding: 0.5rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: var(--warning); background: var(--warning-light); text-transform: uppercase;">
+              ⏳ Due Soon
+            </div>
+            {% for a in nav_due_soon_assignments %}
+              <a href="{% url 'core:assignment_detail' a.id %}" class="notification-item">
+                <i class="fa-regular fa-clock" style="color: var(--warning); margin-top: 3px;"></i>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-main);">{{ a.title }}</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">{{ a.countdown_text }} &bull; {{ a.subject.name }}</div>
+                </div>
+              </a>
+            {% endfor %}
+          {% endif %}
+
+          {% if nav_upcoming_exams %}
+            <div style="padding: 0.5rem 1.25rem; font-size: 0.75rem; font-weight: 700; color: var(--purple); background: var(--purple-light); text-transform: uppercase;">
+              🎓 Upcoming Exams
+            </div>
+            {% for e in nav_upcoming_exams %}
+              <a href="{% url 'planner:exam_list' %}" class="notification-item">
+                <i class="fa-solid fa-award" style="color: var(--purple); margin-top: 3px;"></i>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.88rem; color: var(--text-main);">{{ e.title }}</div>
+                  <div style="font-size: 0.78rem; color: var(--text-muted);">{{ e.date|date:"M d" }} &bull; {{ e.subject.name }}</div>
+                </div>
+              </a>
+            {% endfor %}
+          {% endif %}
+
+          {% if not nav_overdue_assignments and not nav_due_soon_assignments and not nav_upcoming_exams %}
+            <div class="empty-state" style="padding: 1.5rem;">
+              <div style="font-size: 1.8rem;">🎉</div>
+              <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">All caught up!</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">No overdue assignments or upcoming tests.</div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile Dropdown -->
+    <div class="profile-dropdown-wrapper">
+      <button class="profile-btn" id="profile-dropdown-btn">
+        <div class="user-avatar-sm">
+          {% if user.profile.avatar_url %}
+            <img src="{{ user.profile.avatar_url }}" alt="{{ user.username }}">
+          {% else %}
+            <span>{{ user.first_name|first|default:user.username|first|upper }}</span>
+          {% endif %}
+        </div>
+        <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-muted);"></i>
+      </button>
+
+      <div class="dropdown-menu" id="profile-dropdown">
+        <div style="padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--border);">
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">{{ user.get_full_name|default:user.username }}</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted);">{{ user.email }}</div>
+        </div>
+        <a href="{% url 'accounts:profile' %}" class="dropdown-item">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Profile Settings</span>
+        </a>
+        <a href="{% url 'accounts:password_change' %}" class="dropdown-item">
+          <i class="fa-solid fa-key"></i>
+          <span>Change Password</span>
+        </a>
+        <a href="{% url 'analytics:progress_report' %}" class="dropdown-item">
+          <i class="fa-solid fa-file-invoice"></i>
+          <span>Academic Report</span>
+        </a>
+        <div class="dropdown-divider"></div>
+        <a href="{% url 'accounts:logout' %}" class="dropdown-item" style="color: var(--danger);">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>

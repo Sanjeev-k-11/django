@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block auth_content %}
+<div class="auth-wrapper" style="background: linear-gradient(135deg, #FFFDFB 0%, #FAF5EF 50%, #F5EFEB 100%); min-height: 100vh; display: flex; align-items: stretch;">
+  
+  <!-- Left Side: Editorial Banner -->
+  <div class="auth-banner-side" style="flex: 1.15; background: url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat; position: relative; padding: 4rem 4.5rem; display: flex; flex-direction: column; justify-content: space-between;">
+    <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(131, 24, 67, 0.92) 0%, rgba(157, 23, 77, 0.85) 50%, rgba(30, 41, 59, 0.88) 100%); z-index: 1;"></div>
+    
+    <div style="position: relative; z-index: 2;">
+      <a href="{% url 'core:home' %}" style="display: flex; align-items: center; gap: 0.85rem; text-decoration: none; margin-bottom: 3.5rem;">
+        <div class="public-brand-monogram" style="background: #FFFFFF; color: #9D174D; box-shadow: 0 4px 14px rgba(0,0,0,0.2);">SM</div>
+        <div>
+          <div style="font-size: 1.5rem; font-weight: 700; color: #FFFFFF; line-height: 1;">StudyMate</div>
+          <div style="font-size: 0.68rem; letter-spacing: 0.12em; color: #FDE68A; font-weight: 700; margin-top: 3px;">ACADEMIC OS &bull; EST. 2026</div>
+        </div>
+      </a>
+
+      <div class="hero-badge-pill" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); color: #FFFFFF; margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-user-plus"></i>
+        <span>Start Your Scholar Journey</span>
+      </div>
+
+      <h1 style="color: #FFFFFF; font-size: 3rem; line-height: 1.18; margin-bottom: 1.25rem; font-weight: 700;">
+        Elevate Your Academic Potential.
+      </h1>
+
+      <p style="font-size: 1.15rem; color: rgba(255, 255, 255, 0.9); line-height: 1.7; max-width: 540px; margin-bottom: 2rem;">
+        Create your student account in under 60 seconds and experience the peace of mind that comes with structured course planning, habit streaks, and exam prep.
+      </p>
+
+      <div style="background: rgba(255, 255, 255, 0.12); padding: 1.5rem; border-radius: 20px; backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); max-width: 500px;">
+        <div style="font-weight: 700; font-size: 1.05rem; margin-bottom: 0.35rem; color: #FFFFFF;">Ready to level up your grades?</div>
+        <div style="font-size: 0.95rem; color: rgba(255, 255, 255, 0.9); line-height: 1.6;">
+          "The secret of getting ahead is getting started. The secret of getting started is breaking your complex tasks into small manageable tasks." &mdash; Mark Twain
+        </div>
+      </div>
+    </div>
+
+    <div style="position: relative; z-index: 2; border-top: 1px solid rgba(255, 255, 255, 0.2); padding-top: 1.5rem; font-size: 0.88rem; color: rgba(255, 255, 255, 0.8);">
+      &copy; 2026 StudyMate System. Built with Django & Python.
+    </div>
+  </div>
+
+  <!-- Right Side: Luxury Register Form -->
+  <div class="auth-form-side" style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 2.5rem; background: var(--bg);">
+    <div class="card" style="width: 100%; max-width: 480px; padding: 2.5rem; border-radius: 26px; box-shadow: var(--shadow-luxury); border: 1px solid var(--card-border-soft); background: var(--card-bg);">
+      
+      <div style="text-align: center; margin-bottom: 1.75rem;">
+        <div style="width: 58px; height: 58px; border-radius: 20px; background: var(--luxury-rose-light); color: var(--luxury-rose); border: 1px solid var(--luxury-rose-border); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin: 0 auto 1rem auto;">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h2 style="font-size: 1.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;">Create Account</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Join StudyMate to organize your courses and tests
+        </p>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 14px; padding: 0.85rem 1rem; color: #DC2626; font-size: 0.9rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.65rem;">
+          <i class="fa-solid fa-circle-exclamation" style="font-size: 1.1rem; flex-shrink: 0;"></i>
+          <span>{{ form.non_field_errors.0 }}</span>
+        </div>
+      {% endif %}
+
+      <form method="POST" action="{% url 'accounts:register' %}">
+        {% csrf_token %}
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label" for="id_first_name" style="font-size: 0.85rem; font-weight: 700;">First Name *</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+              <div class="form-error">{{ form.first_name.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="id_last_name" style="font-size: 0.85rem; font-weight: 700;">Last Name *</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+              <div class="form-error">{{ form.last_name.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_username" style="font-size: 0.85rem; font-weight: 700;">Username *</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="form-error">{{ form.username.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_email" style="font-size: 0.85rem; font-weight: 700;">Email Address *</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <div class="form-error">{{ form.email.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label" for="id_password" style="font-size: 0.85rem; font-weight: 700;">Password *</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div class="form-error">{{ form.password.errors.0 }}</div>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="id_password_confirm" style="font-size: 0.85rem; font-weight: 700;">Confirm Password *</label>
+            {{ form.password_confirm }}
+            {% if form.password_confirm.errors %}
+              <div class="form-error">{{ form.password_confirm.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <button type="submit" class="hero-cta-btn" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 1.05rem; border-radius: var(--radius-full); cursor: pointer; border: none; margin-top: 0.5rem;">
+          <span>Complete Registration</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div style="margin-top: 1.75rem; text-align: center; border-top: 1px solid var(--border); padding-top: 1.25rem; font-size: 0.92rem; color: var(--text-muted);">
+        Already have an account?
+        <a href="{% url 'accounts:login' %}" style="font-weight: 700; color: var(--luxury-rose); margin-left: 0.25rem;">Sign In</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

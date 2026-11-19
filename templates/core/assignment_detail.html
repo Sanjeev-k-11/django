@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+  
+  <div style="margin-bottom: 1.5rem;">
+    <a href="{% url 'core:assignment_list' %}" style="font-size: 0.95rem; color: var(--text-muted);">
+      <i class="fa-solid fa-arrow-left"></i> Back to Assignments
+    </a>
+  </div>
+
+  <div class="card" style="border-left: 6px solid {{ assignment.subject.color }};">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem;">
+          <span class="badge" style="background: {{ assignment.subject.color }}18; color: {{ assignment.subject.color }}; font-weight: 700;">
+            {{ assignment.subject.name }}
+          </span>
+          <span class="badge badge-{{ assignment.priority }}">{{ assignment.get_priority_display }} Priority</span>
+          <span class="badge {% if assignment.is_completed %}badge-completed{% elif assignment.is_overdue %}badge-overdue{% else %}badge-not-started{% endif %}" id="assign-badge-{{ assignment.id }}">
+            {{ assignment.get_status_display }}
+          </span>
+        </div>
+        <h1 style="font-size: 1.85rem; color: var(--text-main);">{{ assignment.title }}</h1>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn {% if assignment.is_completed %}btn-success{% else %}btn-secondary{% endif %}" onclick="toggleAssignmentDone({{ assignment.id }}, this)">
+          <i class="{% if assignment.is_completed %}fa-solid fa-check{% else %}fa-regular fa-circle{% endif %}"></i>
+          <span>{% if assignment.is_completed %}Completed{% else %}Mark as Done{% endif %}</span>
+        </button>
+        <a href="{% url 'core:assignment_update' assignment.id %}" class="btn btn-secondary">
+          <i class="fa-solid fa-pen-to-square"></i> Edit
+        </a>
+        <a href="{% url 'core:assignment_delete' assignment.id %}" class="btn btn-danger btn-icon">
+          <i class="fa-solid fa-trash-can"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Deadlines info -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; background: var(--bg); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+      <div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">DUE DATE</div>
+        <div style="font-size: 1.05rem; font-weight: 700; margin-top: 2px;">
+          <i class="fa-regular fa-calendar"></i> {{ assignment.due_date|date:"F d, Y" }}
+        </div>
+      </div>
+      <div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">DUE TIME</div>
+        <div style="font-size: 1.05rem; font-weight: 700; margin-top: 2px;">
+          <i class="fa-regular fa-clock"></i> {{ assignment.due_time|time:"H:i"|default:"Not specified" }}
+        </div>
+      </div>
+      <div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase;">STATUS COUNTDOWN</div>
+        <div style="font-size: 1.05rem; font-weight: 700; color: {% if assignment.is_overdue %}var(--danger){% elif assignment.is_completed %}var(--success){% else %}var(--primary){% endif %}; margin-top: 2px;">
+          {{ assignment.countdown_text }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    {% if assignment.description %}
+      <div style="margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 0.5rem;">Assignment Description</h3>
+        <div style="white-space: pre-wrap; line-height: 1.7; color: var(--text-main); font-size: 1rem;">
+          {{ assignment.description }}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Attachment Download Section (if file uploaded) -->
+    {% if assignment.attachment %}
+      <div style="margin-bottom: 2rem; padding: 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fa-solid fa-file-arrow-down" style="font-size: 1.75rem; color: var(--primary);"></i>
+          <div>
+            <div style="font-weight: 700; font-size: 0.95rem;">Attached Resource File</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">{{ assignment.attachment.name }}</div>
+          </div>
+        </div>
+        <a href="{{ assignment.attachment.url }}" download class="btn btn-primary btn-sm">
+          <i class="fa-solid fa-download"></i> Download File
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- Interactive Subtasks Checklist -->
+    <div style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <h3>Subtasks & Checklist</h3>
+          <div style="font-size: 0.82rem; color: var(--text-muted);" id="subtask-progress-text">
+            {{ assignment.subtasks_done_count }}/{{ assignment.subtasks_count }} completed ({{ assignment.subtasks_progress_percent }}%)
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-bar-container" style="margin-bottom: 1.25rem;">
+        <div class="progress-bar-fill" id="subtask-progress-bar" style="width: {{ assignment.subtasks_progress_percent }}%;"></div>
+      </div>
+
+      <!-- Add Subtask Form -->
+      <form id="subtask-create-form" action="{% url 'core:subtask_add' assignment.id %}" method="POST" style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+        {% csrf_token %}
+        <input type="text" name="title" class="form-input" placeholder="Type a subtask or milestone and press enter..." required style="flex: 1;">
+        <button type="submit" class="btn btn-primary btn-sm">
+          <i class="fa-solid fa-plus"></i> Add Subtask
+        </button>
+      </form>
+
+      <!-- Subtasks List -->
+      <div id="subtasks-list-container" style="display: flex; flex-direction: column;">
+        {% for item in subtasks %}
+          <div class="subtask-item" id="subtask-row-{{ item.id }}" style="display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+            <label style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+              <input type="checkbox" class="form-checkbox" onchange="toggleSubtask({{ item.id }})" {% if item.is_done %}checked{% endif %}>
+              <span style="{% if item.is_done %}text-decoration: line-through; opacity: 0.6;{% endif %}">{{ item.title }}</span>
+            </label>
+            <button type="button" class="btn btn-sm btn-danger btn-icon" onclick="deleteSubtask({{ item.id }})" title="Delete subtask">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        {% empty %}
+          <div style="font-size: 0.88rem; color: var(--text-muted); padding: 0.5rem 0;" id="empty-subtasks-msg">
+            No subtasks added yet. Break down this assignment into manageable steps above!
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

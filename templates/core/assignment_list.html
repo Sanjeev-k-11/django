@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1>Assignments & Deadlines</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Track coursework, project deadlines, subtask checklists, and submission files.</p>
+  </div>
+  <a href="{% url 'core:assignment_create' %}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> New Assignment
+  </a>
+</div>
+
+<!-- Filter & Search Toolbar -->
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+  <form method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) 100px; gap: 0.75rem; align-items: flex-end;">
+    
+    <div>
+      <label class="form-label" style="font-size: 0.8rem;">Search</label>
+      <input type="text" name="q" value="{{ search_query }}" class="form-input" placeholder="Keyword..." style="padding: 0.5rem 0.75rem;">
+    </div>
+
+    <div>
+      <label class="form-label" style="font-size: 0.8rem;">Subject</label>
+      <select name="subject" class="form-select" style="padding: 0.5rem 0.75rem;">
+        <option value="">All Subjects</option>
+        {% for s in subjects %}
+          <option value="{{ s.id }}" {% if selected_subject == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="form-label" style="font-size: 0.8rem;">Status</label>
+      <select name="status" class="form-select" style="padding: 0.5rem 0.75rem;">
+        <option value="">All Statuses</option>
+        <option value="not_started" {% if selected_status == 'not_started' %}selected{% endif %}>Not Started</option>
+        <option value="in_progress" {% if selected_status == 'in_progress' %}selected{% endif %}>In Progress</option>
+        <option value="completed" {% if selected_status == 'completed' %}selected{% endif %}>Completed</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="form-label" style="font-size: 0.8rem;">Priority</label>
+      <select name="priority" class="form-select" style="padding: 0.5rem 0.75rem;">
+        <option value="">All Priorities</option>
+        <option value="low" {% if selected_priority == 'low' %}selected{% endif %}>Low</option>
+        <option value="medium" {% if selected_priority == 'medium' %}selected{% endif %}>Medium</option>
+        <option value="high" {% if selected_priority == 'high' %}selected{% endif %}>High</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="form-label" style="font-size: 0.8rem;">Sort By</label>
+      <select name="sort" class="form-select" style="padding: 0.5rem 0.75rem;">
+        <option value="due_date" {% if selected_sort == 'due_date' %}selected{% endif %}>Due Date (Earliest)</option>
+        <option value="due_date_desc" {% if selected_sort == 'due_date_desc' %}selected{% endif %}>Due Date (Latest)</option>
+        <option value="priority" {% if selected_sort == 'priority' %}selected{% endif %}>Priority (High to Low)</option>
+        <option value="title" {% if selected_sort == 'title' %}selected{% endif %}>Title (A-Z)</option>
+      </select>
+    </div>
+
+    <div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.55rem;">
+        <i class="fa-solid fa-filter"></i> Filter
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- Assignments List Cards -->
+{% if page_obj %}
+  <div style="display: flex; flex-direction: column; gap: 1rem;">
+    {% for a in page_obj %}
+      <div class="card" style="padding: 1.25rem; border-left: 5px solid {% if a.is_completed %}var(--success){% elif a.is_overdue %}var(--danger){% else %}{{ a.subject.color }}{% endif %};">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          
+          <!-- Left side: Checkbox & Info -->
+          <div style="display: flex; align-items: flex-start; gap: 1rem; flex: 1; min-width: 280px;">
+            <button type="button" class="btn btn-icon btn-secondary" onclick="toggleAssignmentDone({{ a.id }}, this)" title="Toggle completed state" style="margin-top: 2px;">
+              <i class="{% if a.is_completed %}fa-solid fa-check{% else %}fa-regular fa-circle{% endif %}"></i>
+            </button>
+
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                <a href="{% url 'core:assignment_detail' a.id %}" style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); {% if a.is_completed %}text-decoration: line-through; opacity: 0.75;{% endif %}">
+                  {{ a.title }}
+                </a>
+                <span class="badge" style="background: {{ a.subject.color }}18; color: {{ a.subject.color }}; border: 1px solid {{ a.subject.color }}35;">
+                  {{ a.subject.name }}
+                </span>
+                <span class="badge badge-{{ a.priority }}">{{ a.get_priority_display }}</span>
+                {% if a.attachment %}
+                  <span class="badge" style="background: var(--bg); color: var(--text-muted);" title="File attached">
+                    <i class="fa-solid fa-paperclip"></i>
+                  </span>
+                {% endif %}
+              </div>
+
+              {% if a.description %}
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.35rem;">
+                  {{ a.description|truncatewords:25 }}
+                </p>
+              {% endif %}
+
+              <!-- Subtasks Progress Bar & Count -->
+              {% if a.subtasks_count > 0 %}
+                <div style="margin-top: 0.5rem; max-width: 250px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px;">
+                    <span>Subtasks</span>
+                    <span>{{ a.subtasks_done_count }}/{{ a.subtasks_count }}</span>
+                  </div>
+                  <div class="progress-bar-container" style="height: 5px;">
+                    <div class="progress-bar-fill" style="width: {{ a.subtasks_progress_percent }}%;"></div>
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Right side: Due Countdown & Actions -->
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="text-align: right;">
+              <div style="font-size: 0.95rem; font-weight: 700;">
+                <i class="fa-regular fa-calendar"></i> {{ a.due_date|date:"M d, Y" }}
+              </div>
+              <div style="margin-top: 0.2rem;">
+                <span class="badge {% if a.is_completed %}badge-completed{% elif a.is_overdue %}badge-overdue{% elif a.is_due_soon %}badge-due-soon{% else %}badge-not-started{% endif %}" id="assign-badge-{{ a.id }}">
+                  {{ a.countdown_text }}
+                </span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 0.4rem;">
+              <a href="{% url 'core:assignment_detail' a.id %}" class="btn btn-sm btn-secondary" title="View Detail">
+                <i class="fa-solid fa-eye"></i>
+              </a>
+              <a href="{% url 'core:assignment_update' a.id %}" class="btn btn-sm btn-secondary" title="Edit">
+                <i class="fa-solid fa-pen-to-square"></i>
+              </a>
+              <a href="{% url 'core:assignment_delete' a.id %}" class="btn btn-sm btn-danger btn-icon" title="Delete">
+                <i class="fa-solid fa-trash-can"></i>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination Controls -->
+  {% if page_obj.has_other_pages %}
+    <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem;">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if selected_subject %}&subject={{ selected_subject }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_priority %}&priority={{ selected_priority }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-sm btn-secondary">&laquo; Previous</a>
+      {% endif %}
+      
+      <span class="btn btn-sm btn-secondary" style="pointer-events: none;">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if selected_subject %}&subject={{ selected_subject }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if selected_priority %}&priority={{ selected_priority }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="btn btn-sm btn-secondary">Next &raquo;</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+{% else %}
+  <div class="empty-state card">
+    <div class="empty-state-emoji">📝</div>
+    <div class="empty-state-title">No assignments match your filter!</div>
+    <p>Try clearing your search terms or create a new assignment.</p>
+    <a href="{% url 'core:assignment_create' %}" class="btn btn-primary" style="margin-top: 1rem;">
+      + Create Assignment
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

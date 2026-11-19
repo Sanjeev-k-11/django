@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1>Study Goals & Milestones</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Set daily targets, weekly objectives, and long-term academic ambitions.</p>
+  </div>
+  <a href="{% url 'core:goal_create' %}" class="btn btn-primary">
+    <i class="fa-solid fa-plus"></i> New Study Goal
+  </a>
+</div>
+
+<!-- Tabs for Goal Types -->
+<div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+  <a href="{% url 'core:goal_list' %}" class="btn btn-sm {% if selected_type == 'all' %}btn-primary{% else %}btn-secondary{% endif %}">All Goals</a>
+  <a href="{% url 'core:goal_list' %}?type=daily" class="btn btn-sm {% if selected_type == 'daily' %}btn-primary{% else %}btn-secondary{% endif %}">Daily</a>
+  <a href="{% url 'core:goal_list' %}?type=weekly" class="btn btn-sm {% if selected_type == 'weekly' %}btn-primary{% else %}btn-secondary{% endif %}">Weekly</a>
+  <a href="{% url 'core:goal_list' %}?type=long_term" class="btn btn-sm {% if selected_type == 'long_term' %}btn-primary{% else %}btn-secondary{% endif %}">Long-term</a>
+</div>
+
+{% if goals %}
+  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+    {% for g in goals %}
+      <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; min-height: 220px;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="badge" style="background: var(--primary-light); color: var(--primary); font-weight: 700;">
+                {{ g.get_goal_type_display }}
+              </span>
+              {% if g.subject %}
+                <span class="badge" style="background: {{ g.subject.color }}18; color: {{ g.subject.color }};">
+                  {{ g.subject.name }}
+                </span>
+              {% endif %}
+            </div>
+            <span class="badge {% if g.status == 'completed' %}badge-completed{% elif g.status == 'in_progress' %}badge-in-progress{% else %}badge-not-started{% endif %}" id="goal-status-badge-{{ g.id }}">
+              {{ g.get_status_display }}
+            </span>
+          </div>
+
+          <h2 style="font-size: 1.25rem; color: var(--text-main); margin-bottom: 0.5rem;">
+            {{ g.title }}
+          </h2>
+
+          {% if g.description %}
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+              {{ g.description }}
+            </p>
+          {% endif %}
+
+          <!-- Interactive Live Progress Slider -->
+          <div style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.35rem;">
+              <span style="font-weight: 600;">Progress</span>
+              <span style="font-weight: 700; color: var(--primary);" id="goal-pct-display-{{ g.id }}">{{ g.progress }}%</span>
+            </div>
+            <input type="range" min="0" max="100" step="5" value="{{ g.progress }}" style="width: 100%; accent-color: var(--primary); cursor: pointer;" oninput="updateGoalProgressLive({{ g.id }}, this.value)">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 0.75rem; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+          <span>
+            <i class="fa-regular fa-calendar"></i> Target: {{ g.target_date|date:"M d, Y" }}
+          </span>
+          <div style="display: flex; gap: 0.4rem;">
+            <a href="{% url 'core:goal_update' g.id %}" class="btn btn-sm btn-secondary" title="Edit Goal">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            <a href="{% url 'core:goal_delete' g.id %}" class="btn btn-sm btn-danger btn-icon" title="Delete Goal">
+              <i class="fa-solid fa-trash-can"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="empty-state card">
+    <div class="empty-state-emoji">🎯</div>
+    <div class="empty-state-title">No goals found!</div>
+    <p>Set clear targets for your studies to track your ongoing progress.</p>
+    <a href="{% url 'core:goal_create' %}" class="btn btn-primary" style="margin-top: 1rem;">
+      + Create Your First Goal
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

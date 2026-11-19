@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block auth_content %}
+<!-- Reuse Public Navbar -->
+<header class="public-navbar">
+  <a href="{% url 'core:home' %}" class="public-brand">
+    <div class="public-brand-monogram">SM</div>
+    <div>
+      <div class="public-brand-title">StudyMate</div>
+      <div class="public-brand-subtitle">ACADEMIC OS &bull; EST. 2026</div>
+    </div>
+  </a>
+
+  <ul class="public-nav-links">
+    <li><a href="{% url 'core:home' %}" class="public-pill-link">Home</a></li>
+    <li><a href="{% url 'core:home' %}#study-pillars" class="public-pill-link">Study Pillars</a></li>
+    <li><a href="{% url 'core:about' %}" class="public-pill-link active">About Us</a></li>
+    <li><a href="{% url 'core:contact' %}" class="public-pill-link">Support & FAQ</a></li>
+  </ul>
+
+  <div class="public-actions-right">
+    <button class="action-icon-btn" id="theme-toggle-btn" title="Toggle Light / Dark Mode">
+      <i class="fa-solid fa-moon" id="theme-toggle-icon"></i>
+    </button>
+    {% if user.is_authenticated %}
+      <a href="{% url 'core:dashboard' %}" class="public-btn-signin" style="background: linear-gradient(135deg, #1E40AF, #2563EB);">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>My Dashboard</span>
+      </a>
+    {% else %}
+      <a href="{% url 'accounts:login' %}" class="public-btn-signin">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <span>Sign In</span>
+      </a>
+    {% endif %}
+  </div>
+</header>
+
+<div class="section-wrapper-luxury">
+  <!-- About Hero -->
+  <div style="text-align: center; max-width: 850px; margin: 3rem auto 4rem auto;">
+    <div class="section-tag-badge">THE STUDYMATE PHILOSOPHY</div>
+    <h1 style="font-size: 3.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 1.25rem; color: var(--text-main);">
+      Empowering Scholars with Serenity, Focus & Clarity.
+    </h1>
+    <div class="gradient-divider" style="margin-bottom: 1.5rem;"></div>
+    <p style="font-size: 1.2rem; color: var(--text-muted); line-height: 1.8;">
+      We believe that academic excellence isn’t born from endless cramming or chaotic multitasking. It is cultivated through peaceful daily consistency, intentional focus intervals, and complete command over your syllabus.
+    </p>
+  </div>
+
+  <!-- Story & Vision Grid -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-bottom: 5rem;">
+    <div class="card" style="border-radius: 26px; padding: 3rem; box-shadow: var(--shadow-luxury); border: 1px solid var(--card-border-soft);">
+      <div style="font-size: 0.82rem; font-weight: 700; color: var(--luxury-rose); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem;">
+        WHY WE BUILT STUDYMATE
+      </div>
+      <h2 style="font-size: 2rem; margin-bottom: 1rem; color: var(--text-main);">From Student Frustration to Academic Freedom</h2>
+      <p style="font-size: 1.05rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 1rem;">
+        Modern college students juggle lecture slides on one tab, fragmented Google Drive folders on another, calendar alerts on their phones, and chaotic notes scattered everywhere.
+      </p>
+      <p style="font-size: 1.05rem; line-height: 1.7; color: var(--text-muted);">
+        StudyMate unites everything into a single, distraction-free environment: your course syllabi, subtask-broken assignments, 25/5 Pomodoro timers, exam countdowns, and printable progress records.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+      <div class="category-card-luxury" style="padding: 2rem 1.5rem;">
+        <div class="squircle-icon-wrap" style="background: #FDF2F8; color: #BE185D; border: 1px solid #FBCFE8;">
+          <i class="fa-solid fa-peace"></i>
+        </div>
+        <h3 class="category-card-title">Cognitive Calm</h3>
+        <p class="category-card-desc">Clean white aesthetics with serif typography that relieves digital eye-strain.</p>
+      </div>
+
+      <div class="category-card-luxury" style="padding: 2rem 1.5rem;">
+        <div class="squircle-icon-wrap" style="background: #F0FDFA; color: #0D9488; border: 1px solid #99F6E4;">
+          <i class="fa-solid fa-bullseye"></i>
+        </div>
+        <h3 class="category-card-title">Atomic Focus</h3>
+        <p class="category-card-desc">Proven 25/5 interval cycles to enter flow state and finish coursework early.</p>
+      </div>
+
+      <div class="category-card-luxury" style="padding: 2rem 1.5rem;">
+        <div class="squircle-icon-wrap" style="background: #F5F3FF; color: #7C3AED; border: 1px solid #DDD6FE;">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <h3 class="category-card-title">Clear Progress</h3>
+        <p class="category-card-desc">Visual grade trends, GPA projections, and weekly hours distribution.</p>
+      </div>
+
+      <div class="category-card-luxury" style="padding: 2rem 1.5rem;">
+        <div class="squircle-icon-wrap" style="background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A;">
+          <i class="fa-solid fa-shield-heart"></i>
+        </div>
+        <h3 class="category-card-title">Total Privacy</h3>
+        <p class="category-card-desc">100% user-isolated database records. Your academic work stays yours.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Methodology / Three Core Pillars -->
+  <div style="background: #FFF9F5; border-radius: 28px; padding: 4rem 2.5rem; border: 1px solid var(--card-border-soft); margin-bottom: 5rem;">
+    <div style="text-align: center; max-width: 700px; margin: 0 auto 3rem auto;">
+      <div class="section-tag-badge">THE STUDYMATE METHOD</div>
+      <h2 style="font-size: 2.3rem; font-weight: 700; color: var(--text-main);">The Three-Step Academic Flywheel</h2>
+      <div class="gradient-divider" style="margin-top: 0.5rem;"></div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+      <div style="background: var(--card-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+        <div style="font-size: 2.5rem; font-weight: 700; color: var(--luxury-rose); margin-bottom: 0.5rem;">01</div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--text-main);">Plan Coursework</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+          Map your subjects, assign target grades, and decompose huge project deadlines into bite-sized subtask checklists.
+        </p>
+      </div>
+
+      <div style="background: var(--card-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+        <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent-teal); margin-bottom: 0.5rem;">02</div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--text-main);">Execute With Flow</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+          Launch the Pomodoro timer, log uninterrupted sessions to your subjects, and protect your consecutive daily study streak.
+        </p>
+      </div>
+
+      <div style="background: var(--card-bg); padding: 2rem; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow-sm);">
+        <div style="font-size: 2.5rem; font-weight: 700; color: var(--purple); margin-bottom: 0.5rem;">03</div>
+        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--text-main);">Reflect & Excel</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+          Enter exam results, track GPA curves, export clean CSV logs, and print formal progress reports for mentors and advisors.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom CTA -->
+  <div style="text-align: center; margin-bottom: 4rem;">
+    <h2 style="font-size: 2.2rem; margin-bottom: 1rem;">Experience Study Clarity Firsthand</h2>
+    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.75rem;">Free, production-ready, and optimized for your academic success.</p>
+    {% if user.is_authenticated %}
+      <a href="{% url 'core:dashboard' %}" class="hero-cta-btn">Open My Dashboard &rarr;</a>
+    {% else %}
+      <a href="{% url 'accounts:register' %}" class="hero-cta-btn">Join StudyMate Free &rarr;</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Floating WhatsApp Support Pill -->
+<a href="{% url 'core:contact' %}" class="floating-whatsapp-pill" title="Chat with Academic Support on WhatsApp">
+  <i class="fa-brands fa-whatsapp" style="font-size: 1.35rem;"></i>
+  <span>WhatsApp Chat</span>
+</a>
+{% endblock %}

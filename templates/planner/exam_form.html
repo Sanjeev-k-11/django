@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 0 auto;">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="fa-solid fa-graduation-cap" style="color: var(--primary);"></i>
+        <span>{{ title }}</span>
+      </div>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="id_title">Exam Title *</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+          <div class="form-error">{{ form.title.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_subject">Subject *</label>
+        {{ form.subject }}
+        {% if form.subject.errors %}
+          <div class="form-error">{{ form.subject.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="id_date">Exam Date *</label>
+          {{ form.date }}
+          {% if form.date.errors %}
+            <div class="form-error">{{ form.date.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_time">Exam Time</label>
+          {{ form.time }}
+          {% if form.time.errors %}
+            <div class="form-error">{{ form.time.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_location">Location / Exam Hall</label>
+        {{ form.location }}
+        {% if form.location.errors %}
+          <div class="form-error">{{ form.location.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_syllabus_notes">Syllabus / Revision Instructions</label>
+        {{ form.syllabus_notes }}
+        {% if form.syllabus_notes.errors %}
+          <div class="form-error">{{ form.syllabus_notes.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Marks Section (for graded exams) -->
+      <div style="background: var(--bg); padding: 1.25rem; border-radius: var(--radius-sm); border: 1px solid var(--border); margin-top: 1rem;">
+        <h4 style="margin-bottom: 0.75rem;">Results & Scoring (Enter after exam completion)</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" for="id_marks_obtained">Marks Obtained</label>
+            {{ form.marks_obtained }}
+            {% if form.marks_obtained.errors %}
+              <div class="form-error">{{ form.marks_obtained.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="form-group" style="margin: 0;">
+            <label class="form-label" for="id_total_marks">Total Marks</label>
+            {{ form.total_marks }}
+            {% if form.total_marks.errors %}
+              <div class="form-error">{{ form.total_marks.errors.0 }}</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'planner:exam_list' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i> Save Exam
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

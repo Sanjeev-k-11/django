@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 0 auto;">
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <i class="fa-solid fa-list-check" style="color: var(--primary);"></i>
+        <span>{{ title }}</span>
+      </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="id_title">Assignment Title *</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+          <div class="form-error">{{ form.title.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="id_subject">Subject *</label>
+          {{ form.subject }}
+          {% if form.subject.errors %}
+            <div class="form-error">{{ form.subject.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_priority">Priority</label>
+          {{ form.priority }}
+          {% if form.priority.errors %}
+            <div class="form-error">{{ form.priority.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="id_due_date">Due Date *</label>
+          {{ form.due_date }}
+          {% if form.due_date.errors %}
+            <div class="form-error">{{ form.due_date.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="id_due_time">Due Time (Optional)</label>
+          {{ form.due_time }}
+          {% if form.due_time.errors %}
+            <div class="form-error">{{ form.due_time.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_status">Current Status</label>
+        {{ form.status }}
+        {% if form.status.errors %}
+          <div class="form-error">{{ form.status.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_description">Description / Instructions</label>
+        {{ form.description }}
+        {% if form.description.errors %}
+          <div class="form-error">{{ form.description.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Optional File Attachment -->
+      <div class="form-group">
+        <label class="form-label" for="id_attachment">
+          <i class="fa-solid fa-paperclip"></i> File Attachment (PDF, DOCX, ZIP - Max 10MB)
+        </label>
+        {{ form.attachment }}
+        {% if form.attachment.errors %}
+          <div class="form-error">{{ form.attachment.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      {% if not form.instance.pk %}
+        <!-- Bulk Subtasks input on create -->
+        <div class="form-group" style="background: var(--bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px dashed var(--border);">
+          <label class="form-label" for="subtasks_bulk">
+            <i class="fa-solid fa-list-ol"></i> Initial Subtasks (Optional - one per line)
+          </label>
+          <textarea name="subtasks_bulk" id="subtasks_bulk" class="form-textarea" rows="3" placeholder="Read Chapter 3&#10;Solve Problem 1-5&#10;Write Final Report"></textarea>
+          <div class="form-help-text">You can also add or check off subtasks later on the detail page.</div>
+        </div>
+      {% endif %}
+
+      <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+        <a href="{% url 'core:assignment_list' %}" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i> Save Assignment
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1>Academic Calendar</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">Interactive visual schedule of assignments, exam dates, deadlines, and reminders.</p>
+  </div>
+  <div style="display: flex; gap: 0.5rem;">
+    <a href="{% url 'core:assignment_create' %}" class="btn btn-secondary btn-sm">+ Task</a>
+    <a href="{% url 'planner:exam_create' %}" class="btn btn-secondary btn-sm">+ Exam</a>
+  </div>
+</div>
+
+<!-- Calendar Legend -->
+<div class="card" style="padding: 0.75rem 1.25rem; margin-bottom: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; font-size: 0.85rem;">
+  <span style="font-weight: 700;">Legend:</span>
+  <span style="display: flex; align-items: center; gap: 0.4rem;">
+    <span style="width: 12px; height: 12px; border-radius: 3px; background: #2563EB;"></span>
+    <span>Assignments</span>
+  </span>
+  <span style="display: flex; align-items: center; gap: 0.4rem;">
+    <span style="width: 12px; height: 12px; border-radius: 3px; background: #7C3AED;"></span>
+    <span>Exams & Tests</span>
+  </span>
+  <span style="display: flex; align-items: center; gap: 0.4rem;">
+    <span style="width: 12px; height: 12px; border-radius: 3px; background: #0D9488;"></span>
+    <span>Study Goals</span>
+  </span>
+  <span style="display: flex; align-items: center; gap: 0.4rem;">
+    <span style="width: 12px; height: 12px; border-radius: 3px; background: #F59E0B;"></span>
+    <span>Reminders</span>
+  </span>
+</div>
+
+<!-- Calendar Container -->
+<div class="card" style="padding: 1.5rem;">
+  <div id="calendar" style="min-height: 650px;"></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const calendarEl = document.getElementById('calendar');
+    if (!calendarEl) return;
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,listMonth'
+      },
+      events: '/calendar/events/',
+      eventClick: function(info) {
+        if (info.event.url) {
+          info.jsEvent.preventDefault();
+          window.location.href = info.event.url;
+        }
+      },
+      eventDidMount: function(info) {
+        info.el.style.fontFamily = '"Times New Roman", Times, serif';
+        info.el.style.fontSize = '0.85rem';
+        info.el.style.padding = '2px 4px';
+        info.el.style.cursor = 'pointer';
+      }
+    });
+
+    calendar.render();
+  });
+</script>
+{% endblock %}

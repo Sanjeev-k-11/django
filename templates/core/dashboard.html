@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Luxury Hero Greeting Banner -->
+<div class="card" style="background: linear-gradient(135deg, #FFFDFB 0%, #FAF5EF 50%, #F5EFEB 100%); border: 1px solid var(--card-border-soft); border-radius: 26px; padding: 2.5rem; margin-bottom: 2rem; box-shadow: var(--shadow-luxury); position: relative; overflow: hidden;">
+  <div style="position: absolute; right: -20px; top: -20px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(157, 23, 77, 0.05) 0%, transparent 70%); pointer-events: none;"></div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; position: relative; z-index: 2;">
+    <div>
+      <div class="hero-badge-pill" style="margin-bottom: 0.85rem;">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>Academic Command Center</span>
+      </div>
+      <h1 style="font-size: 2.4rem; color: var(--text-main); margin-bottom: 0.5rem; font-weight: 700;">
+        {{ greeting }}
+      </h1>
+      <p style="font-size: 1.05rem; font-style: italic; color: var(--text-muted); max-width: 650px; line-height: 1.6;">
+        "{{ daily_quote.quote }}" &mdash; <strong style="color: var(--text-main);">{{ daily_quote.author }}</strong>
+      </p>
+
+      <!-- Overall Academic Progress Bar -->
+      <div style="margin-top: 1.5rem; max-width: 500px;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.4rem;">
+          <span>Semester Academic Completion</span>
+          <span style="color: var(--luxury-rose);">{{ overall_progress }}%</span>
+        </div>
+        <div class="progress-bar-container" style="height: 10px; border-radius: 9999px; background: #E5E7EB;">
+          <div class="progress-bar-fill" style="width: {{ overall_progress }}%; background: linear-gradient(90deg, var(--luxury-rose), #D97706); border-radius: 9999px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Action Pills -->
+    <div style="display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-end;">
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="{% url 'planner:timer' %}" class="hero-cta-btn" style="padding: 0.75rem 1.6rem; font-size: 0.95rem;">
+          <i class="fa-solid fa-stopwatch"></i>
+          <span>Start Pomodoro</span>
+        </a>
+        <button class="btn btn-secondary" onclick="openQuickAddModal()" style="border-radius: 9999px; padding: 0.75rem 1.4rem;">
+          <i class="fa-solid fa-bolt" style="color: var(--luxury-gold);"></i>
+          <span>Quick Add (N)</span>
+        </button>
+      </div>
+
+      <div style="font-size: 0.82rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+        <span class="nav-dot-indicator"></span>
+        <span>All data saved securely in SQLite database</span>
+        <a href="/admin/" target="_blank" style="color: var(--luxury-rose); font-weight: 700; text-decoration: underline;">Open Admin ↗</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Key Stat Cards Grid (With Luxury Squircle Icons Matching Image 2) -->
+<div class="stats-grid">
+  <div class="card" style="padding: 1.5rem; border-radius: 22px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury); display: flex; align-items: center; gap: 1.15rem;">
+    <div class="squircle-icon-wrap" style="width: 58px; height: 58px; border-radius: 18px; margin: 0; background: #FDF2F8; color: #BE185D; border: 1px solid #FBCFE8;">
+      <i class="fa-solid fa-book-open"></i>
+    </div>
+    <div>
+      <div class="stat-val" style="font-size: 1.85rem;">{{ subjects_count }}</div>
+      <div class="stat-label">Enrolled Subjects</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 1.5rem; border-radius: 22px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury); display: flex; align-items: center; gap: 1.15rem;">
+    <div class="squircle-icon-wrap" style="width: 58px; height: 58px; border-radius: 18px; margin: 0; background: #F0FDFA; color: #0D9488; border: 1px solid #99F6E4;">
+      <i class="fa-solid fa-bullseye"></i>
+    </div>
+    <div>
+      <div class="stat-val" style="font-size: 1.85rem;">{{ active_goals_count }}</div>
+      <div class="stat-label">Active Goals</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 1.5rem; border-radius: 22px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury); display: flex; align-items: center; gap: 1.15rem;">
+    <div class="squircle-icon-wrap" style="width: 58px; height: 58px; border-radius: 18px; margin: 0; background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A;">
+      <i class="fa-solid fa-clock"></i>
+    </div>
+    <div>
+      <div class="stat-val" style="font-size: 1.85rem;">{{ pending_assignments_count }}</div>
+      <div class="stat-label">Pending Tasks</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 1.5rem; border-radius: 22px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury); display: flex; align-items: center; gap: 1.15rem;">
+    <div class="squircle-icon-wrap" style="width: 58px; height: 58px; border-radius: 18px; margin: 0; background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0;">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <div>
+      <div class="stat-val" style="font-size: 1.85rem;">{{ completed_assignments_count }}</div>
+      <div class="stat-label">Completed Tasks</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 1.5rem; border-radius: 22px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury); display: flex; align-items: center; gap: 1.15rem;">
+    <div class="squircle-icon-wrap" style="width: 58px; height: 58px; border-radius: 18px; margin: 0; background: #F5F3FF; color: #7C3AED; border: 1px solid #DDD6FE;">
+      <i class="fa-solid fa-hourglass-half"></i>
+    </div>
+    <div>
+      <div class="stat-val" style="font-size: 1.85rem;">{{ week_study_hours }}h</div>
+      <div class="stat-label">Study This Week</div>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 1.5rem; border-radius: 22px; border: 1px solid #FECACA; background: linear-gradient(135deg, #FEF2F2 0%, #FFFFFF 100%); box-shadow: var(--shadow-luxury); display: flex; align-items: center; gap: 1.15rem;">
+    <div class="squircle-icon-wrap" style="width: 58px; height: 58px; border-radius: 18px; margin: 0; background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5;">
+      <i class="fa-solid fa-fire"></i>
+    </div>
+    <div>
+      <div class="stat-val" style="font-size: 1.85rem; color: #DC2626;">{{ streak }} Days 🔥</div>
+      <div class="stat-label" style="font-weight: 700; color: #991B1B;">Active Study Streak</div>
+    </div>
+  </div>
+</div>
+
+<!-- Overdue Tasks Banner (if any) -->
+{% if overdue_assignments %}
+<div class="card" style="border-left: 6px solid var(--danger); background-color: #FEF2F2; border-radius: 20px; margin-bottom: 2rem;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+    <div style="display: flex; align-items: center; gap: 0.65rem; font-weight: 700; color: var(--danger); font-size: 1.15rem;">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      <span>Action Required: {{ overdue_assignments.count }} Overdue Task{{ overdue_assignments.count|pluralize }}</span>
+    </div>
+    <a href="{% url 'core:assignment_list' %}?status=not_started" class="btn btn-sm btn-danger" style="border-radius: 9999px;">View All Overdue</a>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.85rem;">
+    {% for a in overdue_assignments|slice:":3" %}
+      <div style="background: var(--card-bg); padding: 0.95rem; border-radius: 14px; border: 1px solid #FECACA; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <a href="{% url 'core:assignment_detail' a.id %}" style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">{{ a.title }}</a>
+          <div style="font-size: 0.8rem; color: var(--danger); margin-top: 2px;">{{ a.countdown_text }} &bull; {{ a.subject.name }}</div>
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="toggleAssignmentDone({{ a.id }}, this)" title="Mark as done" style="border-radius: 9999px;">
+          <i class="fa-regular fa-circle"></i>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Main Dashboard Grid -->
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.75rem; margin-bottom: 2rem;">
+  
+  <!-- Left Column: Upcoming Deadlines & Charts -->
+  <div style="display: flex; flex-direction: column; gap: 1.75rem;">
+    
+    <!-- Upcoming Deadlines Card -->
+    <div class="card" style="border-radius: 24px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury);">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="fa-solid fa-calendar-check" style="color: var(--luxury-rose);"></i>
+          <span>Upcoming Deadlines & Assignments</span>
+        </div>
+        <a href="{% url 'core:assignment_list' %}" class="category-browse-pill" style="font-size: 0.82rem; padding: 0.35rem 1rem;">View All →</a>
+      </div>
+
+      {% if upcoming_deadlines %}
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          {% for a in upcoming_deadlines %}
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 0.5rem; border-bottom: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 0.95rem;">
+                <button type="button" class="btn btn-icon btn-secondary" onclick="toggleAssignmentDone({{ a.id }}, this)" title="Toggle completion" style="border-radius: 50%;">
+                  <i class="fa-regular fa-circle"></i>
+                </button>
+                <div>
+                  <a href="{% url 'core:assignment_detail' a.id %}" style="font-weight: 700; font-size: 1.05rem; color: var(--text-main);">
+                    {{ a.title }}
+                  </a>
+                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem; font-size: 0.84rem; color: var(--text-muted);">
+                    <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: {{ a.subject.color }};"></span>
+                    <span>{{ a.subject.name }}</span>
+                    <span>&bull;</span>
+                    <span class="badge {% if a.is_due_soon %}badge-due-soon{% else %}badge-not-started{% endif %}">
+                      {{ a.countdown_text }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <span class="badge badge-{{ a.priority }}">{{ a.get_priority_display }}</span>
+                <a href="{% url 'core:assignment_detail' a.id %}" class="btn btn-sm btn-secondary btn-icon" style="border-radius: 50%;">
+                  <i class="fa-solid fa-arrow-right"></i>
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <div class="empty-state-emoji">🎯</div>
+          <div class="empty-state-title">No upcoming deadlines!</div>
+          <p>You're completely on schedule. Add a new assignment whenever you're ready.</p>
+          <a href="{% url 'core:assignment_create' %}" class="hero-cta-btn" style="margin-top: 1rem; padding: 0.65rem 1.4rem; font-size: 0.9rem;">
+            + Add Assignment
+          </a>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Charts Row: Hours Last 7 Days & Assignment Distribution -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem;">
+      <div class="card" style="border-radius: 24px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury);">
+        <div class="card-header">
+          <div class="card-title" style="font-size: 1.05rem;">
+            <i class="fa-solid fa-chart-column" style="color: var(--primary);"></i>
+            <span>Study Hours (Last 7 Days)</span>
+          </div>
+        </div>
+        <div style="height: 220px; position: relative;">
+          <canvas id="chartStudyDays"></canvas>
+        </div>
+      </div>
+
+      <div class="card" style="border-radius: 24px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury);">
+        <div class="card-header">
+          <div class="card-title" style="font-size: 1.05rem;">
+            <i class="fa-solid fa-chart-pie" style="color: var(--luxury-rose);"></i>
+            <span>Task Status Breakdown</span>
+          </div>
+        </div>
+        <div style="height: 220px; position: relative;">
+          <canvas id="chartTaskStatus"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right Column: Classes, Exams, Reminders & Notes -->
+  <div style="display: flex; flex-direction: column; gap: 1.75rem;">
+    
+    <!-- Today's Classes Widget -->
+    <div class="card" style="border-radius: 24px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury);">
+      <div class="card-header">
+        <div class="card-title" style="font-size: 1.05rem;">
+          <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
+          <span>Today's Classes</span>
+        </div>
+        <a href="{% url 'planner:timetable' %}" style="font-size: 0.85rem; color: var(--luxury-rose);">Timetable &rarr;</a>
+      </div>
+
+      {% if today_classes %}
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          {% for c in today_classes %}
+            <div style="border-left: 4px solid {{ c.subject.color }}; padding: 0.75rem 0.85rem; background: var(--ambient-warm); border-radius: 12px; border: 1px solid var(--border);">
+              <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main);">
+                {{ c.subject.name }}
+              </div>
+              <div style="font-size: 0.82rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-top: 0.25rem;">
+                <span><i class="fa-regular fa-clock"></i> {{ c.start_time|time:"H:i" }} - {{ c.end_time|time:"H:i" }}</span>
+                {% if c.room %}<span><i class="fa-solid fa-location-dot"></i> {{ c.room }}</span>{% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 1.25rem 0;">
+          No classes scheduled for today. Focus on independent study!
+        </p>
+      {% endif %}
+    </div>
+
+    <!-- Upcoming Exams Widget -->
+    <div class="card" style="border-radius: 24px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury);">
+      <div class="card-header">
+        <div class="card-title" style="font-size: 1.05rem;">
+          <i class="fa-solid fa-award" style="color: var(--purple);"></i>
+          <span>Upcoming Exams</span>
+        </div>
+        <a href="{% url 'planner:exam_list' %}" style="font-size: 0.85rem; color: var(--luxury-rose);">All Exams &rarr;</a>
+      </div>
+
+      {% if upcoming_exams %}
+        <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+          {% for e in upcoming_exams %}
+            <div style="padding: 0.75rem; border: 1px solid var(--border); border-radius: 14px; display: flex; justify-content: space-between; align-items: center; background: var(--bg);">
+              <div>
+                <div style="font-weight: 700; font-size: 0.92rem;">{{ e.title }}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">{{ e.subject.name }} &bull; {{ e.date|date:"M d, Y" }}</div>
+              </div>
+              <span class="badge" style="background: var(--purple-light); color: var(--purple); font-weight: 700;">
+                {{ e.countdown_text }}
+              </span>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 1.25rem 0;">
+          No upcoming exams scheduled.
+        </p>
+      {% endif %}
+    </div>
+
+    <!-- Active Reminders Widget -->
+    <div class="card" style="border-radius: 24px; border: 1px solid var(--card-border-soft); box-shadow: var(--shadow-luxury);">
+      <div class="card-header">
+        <div class="card-title" style="font-size: 1.05rem;">
+          <i class="fa-solid fa-bell" style="color: var(--luxury-gold);"></i>
+          <span>Reminders</span>
+        </div>
+        <a href="{% url 'planner:reminders' %}" style="font-size: 0.85rem; color: var(--luxury-rose);">Manage &rarr;</a>
+      </div>
+
+      {% if active_reminders %}
+        <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+          {% for r in active_reminders %}
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; padding: 0.4rem 0;">
+              <label class="reminder-item-label" style="display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+                <input type="checkbox" class="form-checkbox" onchange="toggleReminder({{ r.id }}, this)" {% if r.is_done %}checked{% endif %}>
+                <span>{{ r.title }}</span>
+              </label>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">{{ r.datetime|date:"M d, H:i" }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; padding: 1.25rem 0;">
+          No active reminders.
+        </p>
+      {% endif %}
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Interactive Chart.js Initialization -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    Chart.defaults.font.family = '"Times New Roman", Times, serif';
+    Chart.defaults.font.size = 13;
+
+    // 1. Study Hours Last 7 Days (Bar)
+    const ctxDays = document.getElementById('chartStudyDays');
+    if (ctxDays) {
+      new Chart(ctxDays, {
+        type: 'bar',
+        data: {
+          labels: {{ chart_days_labels|safe }},
+          datasets: [{
+            label: 'Hours Studied',
+            data: {{ chart_days_data|safe }},
+            backgroundColor: '#2563EB',
+            borderRadius: 8,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { color: '#F1F5F9' } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // 2. Task Status Breakdown (Doughnut)
+    const ctxStatus = document.getElementById('chartTaskStatus');
+    if (ctxStatus) {
+      new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completed', 'In Progress', 'Not Started'],
+          datasets: [{
+            data: {{ chart_status_data|safe }},
+            backgroundColor: ['#10B981', '#2563EB', '#CBD5E1'],
+            borderWidth: 2,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

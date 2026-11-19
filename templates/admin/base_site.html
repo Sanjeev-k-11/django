@@ -1,0 +1,103 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('StudyMate Admin') }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  :root {
+    --admin-brand: #9D174D;
+    --admin-brand-dark: #831843;
+    --admin-gold: #D97706;
+  }
+  body, button, input, select, textarea, p, h1, h2, h3, th, td, a {
+    font-family: "Times New Roman", Times, serif !important;
+  }
+  #header {
+    background: linear-gradient(135deg, var(--admin-brand) 0%, var(--admin-brand-dark) 100%) !important;
+    color: #FFF !important;
+    padding: 14px 24px !important;
+    box-shadow: 0 4px 12px rgba(157, 23, 77, 0.25) !important;
+  }
+  #branding h1 {
+    font-size: 1.35rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    color: #FFFFFF !important;
+  }
+  #branding h1 a:link, #branding h1 a:visited {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+  }
+  div.breadcrumbs {
+    background: #FFF1F2 !important;
+    color: #831843 !important;
+    border-bottom: 1px solid #FECDD3 !important;
+    font-size: 0.88rem !important;
+  }
+  div.breadcrumbs a {
+    color: var(--admin-brand) !important;
+    font-weight: 600 !important;
+  }
+  .module h2, .module caption, .inline-group h2 {
+    background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%) !important;
+    color: var(--admin-brand) !important;
+    border-bottom: 1px solid #FECDD3 !important;
+    font-weight: 700 !important;
+  }
+  .button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: linear-gradient(135deg, var(--admin-brand) 0%, #BE185D 100%) !important;
+    color: #FFF !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 8px 18px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 6px rgba(157, 23, 77, 0.2) !important;
+    transition: all 0.2s ease !important;
+  }
+  .button:hover, input[type=submit]:hover, input[type=button]:hover {
+    background: linear-gradient(135deg, var(--admin-brand-dark) 0%, var(--admin-brand) 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 10px rgba(157, 23, 77, 0.35) !important;
+  }
+  .button.default, input[type=submit].default, .submit-row input.default {
+    background: linear-gradient(135deg, var(--admin-gold) 0%, #B45309 100%) !important;
+  }
+  .app-return-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.22);
+    color: #FFFFFF !important;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    margin-right: 15px;
+    transition: all 0.2s ease;
+  }
+  .app-return-btn:hover {
+    background: #FFFFFF !important;
+    color: var(--admin-brand) !important;
+  }
+</style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+  <a href="{% url 'admin:index' %}">
+    📚 <strong>StudyMate</strong> &bull; Academic Database Administration
+  </a>
+</h1>
+{% endblock %}
+
+{% block userlinks %}
+  <a href="{% url 'core:dashboard' %}" class="app-return-btn" target="_blank" title="Open student app in a new tab">
+    🎓 Open Student App &rarr;
+  </a>
+  {{ block.super }}
+{% endblock %}
