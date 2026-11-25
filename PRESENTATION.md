@@ -54,7 +54,11 @@ style: |
 ### Student Study Planning & Academic Progress Management System
 **A Production-Ready Academic Operating System for Higher Education**
 
-- **Project Lead / Author:** Sanjeev Kumar
+### 👥 Project Team Members:
+1. **Ayush Kumar** — Reg. No: `12322101`
+2. **Sanjeev Kumar Yadav** — Reg. No: `12321575`
+3. **Amit Yadav** — Reg. No: `12300923`
+
 - **Domain:** Web Application Engineering / EdTech
 - **Technology Stack:** Python 3.14 • Django 6.1.3 • SQLite • Chart.js • FullCalendar • HTML5/CSS3
 - **Source Code Repository:** [github.com/Sanjeev-k-11/django](https://github.com/Sanjeev-k-11/django)
@@ -368,35 +372,7 @@ for (let i = 0; i < bufferSize; i++) {
 
 ---
 
-<!-- Slide 18: Viva / Interview Expected Q&A (Part 1) -->
-# 💬 Viva / Project Defense Questions (1/2)
-
-**Q1: Why did you choose SQLite instead of PostgreSQL or MySQL?**
-- *Answer:* SQLite requires zero external server setup, is self-contained in a single file (`db.sqlite3`), supports ACID transactions, and delivers ultra-fast read performance for student desktop and single-server environments. Django's ORM ensures we can switch to PostgreSQL with a 2-line config change whenever scaling.
-
-**Q2: How does the AJAX task completion work without page reloads?**
-- *Answer:* When a checkbox is clicked, JavaScript captures the event, extracts the CSRF token from cookies, and sends a `POST` request to `/assignments/<id>/toggle/`. The Django view updates the database record and returns a JSON response `{ "success": true, "status": "completed" }`, which updates the DOM dynamically.
-
-**Q3: How are passwords stored securely?**
-- *Answer:* Passwords are never stored in plain text. Django uses PBKDF2 with SHA-256 and a unique per-user cryptographic salt with 600,000 hashing iterations.
-
----
-
-<!-- Slide 19: Viva / Interview Expected Q&A (Part 2) -->
-# 💬 Viva / Project Defense Questions (2/2)
-
-**Q4: How does the study streak logic handle skipped days?**
-- *Answer:* `get_user_streak()` queries unique dates from `StudySession` ordered descending. It checks whether today or yesterday has a session; if so, it increments the streak counter while consecutive previous dates match $Day - i$. As soon as a day gap exists, the loop breaks.
-
-**Q5: What are Django Signals and why were they used here?**
-- *Answer:* We used `post_save` signals on the `User` model (`accounts/signals.py`). Whenever a new user registers or is created, the signal automatically instantiates their linked `Profile` record, guaranteeing zero null-reference errors.
-
-**Q6: How does the ambient sound work without audio files?**
-- *Answer:* It uses the browser's native Web Audio API (`AudioContext`). It synthesizes white and brown noise mathematically through an audio buffer with low-pass filters, meaning zero network bandwidth or copyrighted `.mp3` assets.
-
----
-
-<!-- Slide 20: Future Scope & Roadmap -->
+<!-- Slide 18: Future Roadmap & Scaling Strategy -->
 # 🚀 Future Roadmap & Scaling Strategy
 
 1. **AI-Powered Syllabus Parsing (LLM Ingestion):**
@@ -410,24 +386,29 @@ for (let i = 0; i < bufferSize; i++) {
 
 ---
 
-<!-- Slide 21: Conclusion & Final Remarks -->
-# 🎯 Conclusion
+<!-- Slide 19: Conclusion & Project Summary -->
+# 🎯 Conclusion & Key Takeaways
 
 ### Project Impact
-- **Comprehensive Solution:** StudyMate eliminates the cognitive burden of academic disorganization by unifying courses, tasks, notes, focus cycles, and grades into a single high-performance hub.
-- **Production Standards:** Built strictly following Django's modular architecture, PEP-8 guidelines, semantic HTML, and responsive mobile-first styling.
-- **Practical Value:** Demonstrates proficiency in full-stack web engineering, relational database design, client-side audio APIs, asynchronous DOM manipulation, and automated testing.
+- **Comprehensive Academic Solution:** StudyMate eliminates academic disorganization by unifying courses, tasks, notes, focus cycles, and grades into a single high-performance web hub.
+- **Production Engineering Standards:** Built strictly following Django's modular architecture, PEP-8 guidelines, semantic HTML, and responsive mobile-first styling.
+- **Practical Engineering Value:** Demonstrates mastery in full-stack web engineering, relational database design, client-side audio APIs, asynchronous DOM manipulation, and automated testing.
 
 ---
 
-<!-- Slide 22: Thank You / Q&A -->
+<!-- Slide 20: Thank You & Project Team -->
 # 🙏 Thank You!
 
-### Open for Questions & Demonstration
+### 👥 Project Team Members:
+- **Ayush Kumar** — Reg. No: `12322101`
+- **Sanjeev Kumar Yadav** — Reg. No: `12321575`
+- **Amit Yadav** — Reg. No: `12300923`
 
-- **Developer:** Sanjeev Kumar
+---
+
+### 🌐 Live Links & Project Assets:
 - **GitHub Repository:** [github.com/Sanjeev-k-11/django](https://github.com/Sanjeev-k-11/django)
 - **Live Local Server:** `http://127.0.0.1:8000/`
-- **Admin Access:** `http://127.0.0.1:8000/admin/`
+- **Admin Database Portal:** `http://127.0.0.1:8000/admin/`
 
 > *"Education is not the learning of facts, but the training of the mind to think." — Albert Einstein*
