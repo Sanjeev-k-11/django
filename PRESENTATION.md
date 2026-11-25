@@ -400,15 +400,8 @@ for (let i = 0; i < bufferSize; i++) {
 # 🙏 Thank You!
 
 ### 👥 Project Team Members:
-- **Ayush Kumar** — Reg. No: `12322101`
-- **Sanjeev Kumar Yadav** — Reg. No: `12321575`
-- **Amit Yadav** — Reg. No: `12300923`
+1. **Ayush Kumar** — Reg. No: `12322101`
+2. **Sanjeev Kumar Yadav** — Reg. No: `12321575`
+3. **Amit Yadav** — Reg. No: `12300923`
 
----
-
-### 🌐 Live Links & Project Assets:
-- **GitHub Repository:** [github.com/Sanjeev-k-11/django](https://github.com/Sanjeev-k-11/django)
-- **Live Local Server:** `http://127.0.0.1:8000/`
-- **Admin Database Portal:** `http://127.0.0.1:8000/admin/`
-
-> *"Education is not the learning of facts, but the training of the mind to think." — Albert Einstein*
+### Open for Questions & Discussion 💬
